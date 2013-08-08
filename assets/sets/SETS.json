@@ -1,0 +1,64 @@
+{sets:[
+	{
+		"name": "Magic 2014 Core Set",
+	    "code": "M14",
+	    "releaseDate": "2013-07-19",
+	    "border": "black",
+	    "type": "core"	
+	},
+	{
+		"name": "Dragon's Maze",
+	    "code": "DGM",
+	    "releaseDate": "2013-05-03",
+	    "border": "black",
+	    "type": "expansion",
+	    "block": "Return to Ravnica"
+	},
+	{
+		"name": "Gatecrash",
+	    "code": "GTC",
+	    "releaseDate": "2013-02-01",
+	    "border": "black",
+	    "type": "expansion",
+	    "block": "Return to Ravnica"
+	},
+	{
+		"name": "Return to Ravnica",
+	    "code": "RTR",
+	    "releaseDate": "2012-10-05",
+	    "border": "black",
+	    "type": "expansion",
+	    "block": "Return to Ravnica"
+	},
+	{
+		"name": "Magic 2013",
+	    "code": "M13",
+	    "releaseDate": "2012-07-13",
+	    "border": "black",
+	    "type": "core"
+	},
+	{
+		"name": "Avacyn Restored",
+	    "code": "AVR",
+	    "releaseDate": "2012-05-04",
+	    "border": "black",
+	    "type": "expansion",
+	    "block": "Innistrad"
+	},
+	{
+		"name": "Dark Ascension",
+	    "code": "DKA",
+	    "releaseDate": "2012-02-03",
+	    "border": "black",
+	    "type": "expansion",
+	    "block": "Innistrad"
+	},
+	{
+		"name": "Innistrad",
+	    "code": "ISD",
+	    "releaseDate": "2011-09-30",
+	    "border": "black",
+	    "type": "expansion",
+	    "block": "Innistrad"
+	}
+]}

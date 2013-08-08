@@ -123,4 +123,8 @@ public class MagicContentProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		return null;
 	}
+	
+	public Uri getUri(String path){
+		return Uri.parse(BASE_URI + "/" + path);
+	}
 }

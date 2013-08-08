@@ -20,7 +20,7 @@ public class Card {
 	public String toughness;
 	public int loyalty;
 	public int multiverseid;
-	public int variations;
+	public int[] variations;
 	public String imageName;
 	public String watermark;
 	public String border;

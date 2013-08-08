@@ -66,7 +66,6 @@ public class CardListActivity extends BaseFragmentActivity implements
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			mSetId = intent.getStringExtra(Extras.SET);
 			loadSet();
 		}
 	}
@@ -80,10 +79,18 @@ public class CardListActivity extends BaseFragmentActivity implements
 	private UpdateReceiver mReceiver;
 	private ImageLoader mLoader;
 
+	public static void newInstance(final Context context, final String set) {
+		final Intent intent = new Intent(context, CardListActivity.class);
+		intent.putExtra(Extras.SET, set);
+		context.startActivity(intent);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_card_list);
+
+		mSetId = getIntent().getExtras().getString(Extras.SET);
 		mAdapter = new SimpleCursorAdapter(this, R.layout.list_item_card, null,
 				COLUMNS, VIEW_IDS, SimpleCursorAdapter.NO_SELECTION);
 		mAdapter.setViewBinder(this);
@@ -98,14 +105,15 @@ public class CardListActivity extends BaseFragmentActivity implements
 	}
 
 	private void createReceiver() {
-		mFilter = new IntentFilter(ApiService.Actions.READ_DONE);
+		mFilter = new IntentFilter(ApiService.Actions.SET_READ);
 		mFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		mReceiver = new UpdateReceiver();
 	}
 
 	private void startApiService() {
 		Intent intent = new Intent(this, ApiService.class);
-		intent.putExtra(Extras.SET, "DGM");
+		intent.putExtra(ApiService.Extras.QUERY, mSetId);
+		intent.putExtra(ApiService.Extras.OPERATION, ApiService.Operations.SINGLE_SET);
 		startService(intent);
 	}
 
@@ -184,10 +192,13 @@ public class CardListActivity extends BaseFragmentActivity implements
 						getAssets().open(
 								"symbols/"
 										+ matchResult.group().replace("{", "")
-												.replace("/", "_").replace("}", "").toLowerCase()
+												.replace("/", "_")
+												.replace("}", "").toLowerCase()
 										+ ".png"), null);
-				image.setBounds(0, 0, image.getIntrinsicWidth() * 3, image.getIntrinsicHeight() * 3);
-				ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BASELINE);
+				image.setBounds(0, 0, image.getIntrinsicWidth() * 3,
+						image.getIntrinsicHeight() * 3);
+				ImageSpan imageSpan = new ImageSpan(image,
+						ImageSpan.ALIGN_BASELINE);
 				spannableText.setSpan(imageSpan, matchResult.start(),
 						matchResult.end(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 			} catch (IOException e) {
@@ -275,16 +286,13 @@ public class CardListActivity extends BaseFragmentActivity implements
 	protected void onPause() {
 		super.onPause();
 		unregisterReceiver(mReceiver);
+		mReceiver = null;
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		createReceiver();
 		registerReceiver(mReceiver, mFilter);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
 	}
 }
