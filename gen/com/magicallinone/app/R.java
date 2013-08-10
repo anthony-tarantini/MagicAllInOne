@@ -22,18 +22,12 @@ public final class R {
         public static final int white=0x7f070000;
     }
     public static final class dimen {
-        /** 
-         Customize dimensions originally defined in res/values/dimens.xml (such as
-         screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
-    
-         */
         public static final int activity_horizontal_margin=0x7f080000;
         public static final int activity_vertical_margin=0x7f080001;
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int placeholder=0x7f020001;
-        public static final int w=0x7f020002;
     }
     public static final class id {
         public static final int action_settings=0x7f0c0010;
@@ -81,18 +75,6 @@ public final class R {
         public static final int sets=0x7f090003;
     }
     public static final class style {
-        /** 
-        Base application theme for API 11+. This theme completely replaces
-        AppBaseTheme from res/values/styles.xml on API 11+ devices.
-    
- API 11 theme customizations can go here. 
-
-        Base application theme for API 14+. This theme completely replaces
-        AppBaseTheme from BOTH res/values/styles.xml and
-        res/values-v11/styles.xml on API 14+ devices.
-    
- API 14 theme customizations can go here. 
-         */
         public static final int AppBaseTheme=0x7f0a0000;
         public static final int AppTheme=0x7f0a0001;
     }
