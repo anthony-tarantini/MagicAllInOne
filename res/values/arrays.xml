@@ -4,5 +4,6 @@
         <item>@string/sets</item>
         <item>@string/life_counter</item>
         <item>@string/search</item>
+        <item>@string/deckbuilder</item>
     </string-array>
 </resources>

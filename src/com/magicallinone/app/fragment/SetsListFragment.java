@@ -1,13 +1,9 @@
 package com.magicallinone.app.fragment;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
@@ -23,6 +19,7 @@ import com.magicallinone.app.R;
 import com.magicallinone.app.activities.CardListActivity;
 import com.magicallinone.app.datasets.SetTable;
 import com.magicallinone.app.providers.MagicContentProvider;
+import com.magicallinone.app.utils.ImageUtils;
 
 public class SetsListFragment extends BaseFragment implements
 		OnItemClickListener, ViewBinder, LoaderManager.LoaderCallbacks<Cursor> {
@@ -37,9 +34,6 @@ public class SetsListFragment extends BaseFragment implements
 	private static final int[] VIEWS = { R.id.list_item_set_symbol,
 			R.id.list_item_set_logo, };
 
-	private static final String LOGOS = "set_logos";
-	private static final String SYMBOLS = "set_symbols";
-	
 	public static SetsListFragment newInstance() {
 		SetsListFragment setsListFragment = new SetsListFragment();
 		Bundle args = setsListFragment.getArguments();
@@ -59,19 +53,21 @@ public class SetsListFragment extends BaseFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_sets_list, container, false);
-		
-		mListView = (ListView) view.findViewById(R.id.set_list); 
-		mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.list_item_set, null, COLUMNS, VIEWS, 0);
+		View view = inflater.inflate(R.layout.fragment_sets_list, container,
+				false);
+
+		mListView = (ListView) view.findViewById(R.id.set_list);
+		mAdapter = new SimpleCursorAdapter(getActivity(),
+				R.layout.list_item_set, null, COLUMNS, VIEWS, 0);
 		mAdapter.setViewBinder(this);
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemClickListener(this);
-		
+
 		mLoaderManager.initLoader(1, null, this);
-		
+
 		return view;
 	}
-	
+
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		mCursorLoader = new CursorLoader(getActivity(),
@@ -93,8 +89,10 @@ public class SetsListFragment extends BaseFragment implements
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-		String tag = (String) view.findViewById(R.id.list_item_set_symbol).getTag();
+	public void onItemClick(AdapterView<?> adapterView, View view,
+			int position, long id) {
+		String tag = (String) view.findViewById(R.id.list_item_set_symbol)
+				.getTag();
 		CardListActivity.newInstance(getActivity(), tag);
 	}
 
@@ -105,25 +103,16 @@ public class SetsListFragment extends BaseFragment implements
 		case R.id.list_item_set_logo:
 			imageView = (ImageView) view;
 			view.setTag(cursor.getString(columnIndex));
-			imageView.setImageDrawable(getDrawable(LOGOS, cursor.getString(columnIndex)));
+			imageView.setImageDrawable(ImageUtils.getDrawable(getActivity(),
+					ImageUtils.Folders.LOGOS, cursor.getString(columnIndex)));
 			return true;
 		case R.id.list_item_set_symbol:
 			imageView = (ImageView) view;
 			view.setTag(cursor.getString(columnIndex));
-			imageView.setImageDrawable(getDrawable(SYMBOLS, cursor.getString(columnIndex)));
+			imageView.setImageDrawable(ImageUtils.getDrawable(getActivity(),
+					ImageUtils.Folders.SET_SYMBOL, cursor.getString(columnIndex)));
 			return true;
 		}
 		return false;
-	}
-
-	private Drawable getDrawable(String folder, String filename) {
-		Drawable drawable = null;
-		try {
-			InputStream inputStream = getActivity().getAssets().open(folder + "/" + filename + ".png");
-			drawable = Drawable.createFromStream(inputStream, null);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return drawable;
 	}
 }
