@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MagicAllInOne</string>
+    <string name="app_name">Magic All In One</string>
     <string name="action_settings">Settings</string>
     <string name="apiservice">ApiService</string>
 	<string name="sets">SETS</string>
 	<string name="life_counter">LIFE COUNTER</string>
 	<string name="search">SEARCH</string>
 	<string name="deckbuilder">DECKBUILDER</string>
+	<string name="add_deck">ADD DECK</string>
+	<string name="you_have_no_saved_decks">YOU HAVE NO SAVED DECKS</string>
+	<string name="deck_title">DECK TITLE</string>
+	<string name="deck_description">DECK DESCRIPTION</string>
+	<string name="deck_format">DECK FORMAT</string>
+	<string name="cancel">CANCEL</string>
+	<string name="submit">SUBMIT</string>
+	<string name="size">"SIZE: "</string>
+	<string name="format">"FORMAT: "</string>
 </resources>

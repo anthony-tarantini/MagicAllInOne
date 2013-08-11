@@ -19,9 +19,11 @@ import android.util.Log;
 import com.google.gson.reflect.TypeToken;
 import com.magicallinone.app.application.MagicApplication;
 import com.magicallinone.app.datasets.CardTable;
+import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.datasets.SetCardTable;
 import com.magicallinone.app.datasets.SetTable;
 import com.magicallinone.app.models.Card;
+import com.magicallinone.app.models.Deck;
 import com.magicallinone.app.models.Set;
 import com.magicallinone.app.models.Sets;
 import com.magicallinone.app.providers.MagicContentProvider;
@@ -37,11 +39,15 @@ public class ApiService extends IntentService {
 	public static final class Extras {
 		public static final String OPERATION = "operation";
 		public static final String QUERY = "query";
+		public static final String TITLE = "title";
+		public static final String DESCRIPTION = "description";
+		public static final String FORMAT = "format";
 	}
 
 	public static final class Operations {
 		public static final int SET_LIST = 1;
 		public static final int SINGLE_SET = 2;
+		public static final int ADD_DECK = 3;
 	}
 
 	public static final String SETS = "sets/";
@@ -67,6 +73,9 @@ public class ApiService extends IntentService {
 			break;
 		case Operations.SET_LIST:
 			readSetList(operations);
+			break;
+		case Operations.ADD_DECK:
+			addDeck(operations, intent);
 		default:
 			break;
 		}
@@ -130,6 +139,14 @@ public class ApiService extends IntentService {
 		}
 	}
 
+	private void addDeck(final ArrayList<ContentProviderOperation> operations, Intent intent){
+		ContentProviderOperation operation;
+		Deck deck = new Deck(intent.getStringExtra(Extras.TITLE), intent.getStringExtra(Extras.DESCRIPTION), 0, intent.getStringExtra(Extras.FORMAT));
+		final ContentValues deckValues = DeckTable.getContentValues(deck);
+		operation = ContentProviderOperation.newInsert(MagicContentProvider.Uris.DECKS_URI).withValues(deckValues).build();
+		operations.add(operation);
+	}
+	
 	private void performOperations(
 			final ArrayList<ContentProviderOperation> operations) {
 		final ContentResolver resolver = getContentResolver();
@@ -144,16 +161,16 @@ public class ApiService extends IntentService {
 
 	private void sendIntent() {
 		Intent broadcastIntent = new Intent();
-		switch(mOperation){
+		switch (mOperation) {
 		case Operations.SINGLE_SET:
 			broadcastIntent.setAction(Actions.SET_READ);
+			broadcastIntent.putExtra(Extras.QUERY, mQuery);
 			break;
 		case Operations.SET_LIST:
 			broadcastIntent.setAction(Actions.SETS_LOAD);
 			break;
 		}
 		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-		broadcastIntent.putExtra(Extras.QUERY, mQuery);
 		sendBroadcast(broadcastIntent);
 	}
 }

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.magicallinone.app.application.MagicApplication;
 import com.magicallinone.app.datasets.CardTable;
 import com.magicallinone.app.datasets.CardsView;
+import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.datasets.SetCardTable;
 import com.magicallinone.app.datasets.SetTable;
 
@@ -92,6 +93,21 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			+ SetCardTable.Columns.CARD_ID
 			+ ") ON CONFLICT REPLACE)";
 
+	public static final String DB_CREATE_DECKS = "CREATE TABLE "
+			+ MagicContentProvider.Paths.DECKS + " ("
+			+ DeckTable.Columns.DECK_ID
+			+ " INTEGER PRIMARY KEY, "
+			+ DeckTable.Columns.NAME
+			+ " TEXT NOT NULL, " 
+			+ DeckTable.Columns.DESCRIPTION
+			+ " TEXT, "
+			+ DeckTable.Columns.SIZE 
+			+ " INTEGER NOT NULL, "
+			+ DeckTable.Columns.FORMAT
+			+ " TEXT, " + " UNIQUE ("
+			+ DeckTable.Columns.DECK_ID
+			+ ") ON CONFLICT REPLACE)"; 
+	
 	public static final String DB_CREATE_CARDS_VIEW = "CREATE VIEW " 
 			+ MagicContentProvider.Paths.CARDS + " AS "
 			+ "SELECT (set_card." + SetCardTable.Columns.SET_CARD_ID
@@ -126,6 +142,7 @@ public class MagicDatabase extends SQLiteOpenHelper {
 		db.execSQL(DB_CREATE_CARD);
 		db.execSQL(DB_CREATE_SET_CARD);
 		db.execSQL(DB_CREATE_CARDS_VIEW);
+		db.execSQL(DB_CREATE_DECKS);
 	}
 
 	@Override
@@ -136,6 +153,7 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.CARD);
 			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.SET_CARD);
 			db.execSQL("DROP VIEW IF EXISTS " + MagicContentProvider.Paths.CARDS);
+			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.DECKS);
 			onCreate(db);
 		}
 	}

@@ -23,6 +23,7 @@ public class MagicContentProvider extends ContentProvider {
 		public static final Uri CARD_URI = Uri.parse(BASE_URI + "/" + Paths.CARD);
 		public static final Uri SET_CARD_URI = Uri.parse(BASE_URI + "/" + Paths.SET_CARD);
 		public static final Uri CARDS_URI = Uri.parse(BASE_URI + "/" + Paths.CARDS);
+		public static final Uri DECKS_URI = Uri.parse(BASE_URI + "/" + Paths.DECKS);
 	}
 
 	public static final class Paths {
@@ -30,6 +31,7 @@ public class MagicContentProvider extends ContentProvider {
 		public static final String CARD = "card";
 		public static final String SET_CARD = "set_card";
 		public static final String CARDS = "cards";
+		public static final String DECKS = "deck";
 	}
 
 	public static final class Codes {
@@ -41,6 +43,8 @@ public class MagicContentProvider extends ContentProvider {
 		public static final int SET_CARD_STAR = 6;
 		public static final int CARDS = 7;
 		public static final int CARDS_STAR = 8;
+		public static final int DECKS = 9;
+		public static final int DECKS_STAR = 10;
 	}
 
 	@Override
@@ -54,6 +58,8 @@ public class MagicContentProvider extends ContentProvider {
 		URI_MATCHER.addURI(AUTHORITY, Paths.SET_CARD + "/*", Codes.SET_CARD_STAR);
 		URI_MATCHER.addURI(AUTHORITY, Paths.CARDS, Codes.CARDS);
 		URI_MATCHER.addURI(AUTHORITY, Paths.CARDS + "/*", Codes.CARDS_STAR);
+		URI_MATCHER.addURI(AUTHORITY, Paths.DECKS, Codes.DECKS);
+		URI_MATCHER.addURI(AUTHORITY, Paths.DECKS + "/*", Codes.DECKS_STAR);
 		return true;
 	}
 
@@ -75,6 +81,10 @@ public class MagicContentProvider extends ContentProvider {
 			id = insertDB.insert(Paths.SET_CARD, null, values);
 			getContext().getContentResolver().notifyChange(uri, null);
 			return Uris.SET_CARD_URI.buildUpon().appendPath(String.valueOf(id)).build();
+		case Codes.DECKS:
+			id = insertDB.insert(Paths.DECKS, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return Uris.DECKS_URI.buildUpon().appendPath(String.valueOf(id)).build();
 		default:
 			throw new UnsupportedOperationException("URI: " + uri + " not supported.");
 		}
@@ -102,6 +112,11 @@ public class MagicContentProvider extends ContentProvider {
 		case Codes.CARDS_STAR:
 			builder = new SQLiteQueryBuilder();
 			builder.setTables(Paths.CARDS);
+			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
+		case Codes.DECKS:
+		case Codes.DECKS_STAR:
+			builder = new SQLiteQueryBuilder();
+			builder.setTables(Paths.DECKS);
 			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
 		default:
 			return null;

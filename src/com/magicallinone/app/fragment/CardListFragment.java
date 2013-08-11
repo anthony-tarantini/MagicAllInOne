@@ -8,7 +8,12 @@ import java.util.regex.Pattern;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -34,6 +39,7 @@ import com.magicallinone.app.application.MagicApplication;
 import com.magicallinone.app.datasets.CardsView;
 import com.magicallinone.app.managers.FontManager;
 import com.magicallinone.app.providers.MagicContentProvider;
+import com.magicallinone.app.services.ApiService;
 import com.magicallinone.app.utils.ImageUtils;
 import com.xtremelabs.imageutils.ImageLoader;
 
@@ -53,12 +59,24 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 		public static final String SET = "set";
 	}
 
+	public class SetReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			loadSet();
+			mProgressDialog.dismiss();
+		}
+	}
+
 	private LoaderManager mLoaderManager;
 	private SimpleCursorAdapter mAdapter;
 	private ListView mListView;
 	private String mSetId;
 	private CursorLoader mCursorLoader;
 	private ImageLoader mLoader;
+	private SetReceiver mReceiver;
+	private IntentFilter mFilter;
+	private ProgressDialog mProgressDialog;
 
 	public static CardListFragment newInstance(String setId) {
 		CardListFragment cardListFragment = new CardListFragment();
@@ -78,9 +96,17 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 
 		mSetId = getArguments().getString(Extras.SET);
 
+		mProgressDialog = new ProgressDialog(getActivity());
+		mProgressDialog.setTitle("Loading Cards");
+		mProgressDialog.setMessage("Stand By ...");
+		mProgressDialog.show();
+		
 		mLoaderManager = getLoaderManager();
 		mLoader = ImageLoader.buildImageLoaderForFragment(this);
 		mLoader.setDefaultOptions(MagicApplication.getImageLoaderOptions());
+
+		createReceiver();
+		startApiService();
 	}
 
 	@Override
@@ -248,5 +274,32 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 			mAdapter.swapCursor(null);
 			mAdapter.notifyDataSetChanged();
 		}
+	}
+	
+	private void createReceiver() {
+		mFilter = new IntentFilter(ApiService.Actions.SET_READ);
+		mFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		mReceiver = new SetReceiver();
+	}
+
+	private void startApiService() {
+		Intent intent = new Intent(getActivity(), ApiService.class);
+		intent.putExtra(ApiService.Extras.QUERY, mSetId);
+		intent.putExtra(ApiService.Extras.OPERATION, ApiService.Operations.SINGLE_SET);
+		getActivity().startService(intent);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		getActivity().unregisterReceiver(mReceiver);
+		mReceiver = null;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		createReceiver();
+		getActivity().registerReceiver(mReceiver, mFilter);
 	}
 }
