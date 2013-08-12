@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
@@ -25,8 +26,8 @@ import android.widget.TextView;
 import com.magicallinone.app.R;
 import com.magicallinone.app.fragment.DeckListFragment;
 import com.magicallinone.app.fragment.SetsListFragment;
+import com.magicallinone.app.listeners.DrawerItemClickListener;
 import com.magicallinone.app.managers.FontManager;
-import com.magicallinong.app.listeners.DrawerItemClickListener;
 
 public class MainActivity extends BaseFragmentActivity implements
 		DrawerItemClickListener, ViewBinder {
@@ -36,12 +37,14 @@ public class MainActivity extends BaseFragmentActivity implements
 	private ActionBarDrawerToggle mDrawerToggle;
 	private int mCurrentFragment;
 
-	public static String[] KEYS = { Keys.TITLE, };
-	public static int[] VIEWS = { R.id.list_item_drawer_text, };
+	public static String[] KEYS = { Keys.TITLE, Keys.IMAGE, };
+	public static int[] VIEWS = { R.id.list_item_drawer_text,
+			R.id.list_item_drawer_image, };
 
 	public static final class Keys {
 		public static final String ROW_ID = "rowid";
 		public static final String TITLE = "title";
+		public static final String IMAGE = "image";
 	}
 
 	public static class DrawerItems {
@@ -62,13 +65,15 @@ public class MainActivity extends BaseFragmentActivity implements
 		setContentView(R.layout.activity_main);
 
 		String[] strings = getResources().getStringArray(R.array.drawer_items);
+		String[] images = {String.valueOf(R.drawable.set), String.valueOf(R.drawable.dice), String.valueOf(R.drawable.search), String.valueOf(R.drawable.card_stack)};
 
 		List<HashMap<String, String>> drawerItems = new ArrayList<HashMap<String, String>>();
 		int count = 0;
-		for (String string : strings) {
+		for (int i = 0; i < 4; i++) {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put(Keys.ROW_ID, "" + count++);
-			map.put(Keys.TITLE, string);
+			map.put(Keys.TITLE, strings[i]);
+			map.put(Keys.IMAGE, images[i]);
 			drawerItems.add(map);
 		}
 
@@ -109,12 +114,18 @@ public class MainActivity extends BaseFragmentActivity implements
 	public boolean setViewValue(View view, Object data,
 			String textRepresentation) {
 		TextView textView;
+		ImageView imageView;
 		switch (view.getId()) {
 		case R.id.list_item_drawer_text:
 			textView = (TextView) view;
 			textView.setText(textRepresentation);
 			textView.setTypeface(FontManager.INSTANCE.getAppFont());
-			break;
+			return true;
+		case R.id.list_item_drawer_image:
+			imageView = (ImageView) view;
+			int resource = Integer.parseInt(textRepresentation);
+			getImageLoader().loadImageFromResource(imageView, resource);
+			return true;
 		}
 		return false;
 	}

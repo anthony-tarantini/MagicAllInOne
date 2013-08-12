@@ -15,7 +15,8 @@
         android:id="@+id/dialog_new_deck_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp" 
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" 
         android:hint="@string/deck_description" />
 
     <EditText
@@ -30,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_margin="5dp"
-        android:background="@color/black" />
+        android:background="@android:color/darker_gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,6 +46,7 @@
             android:layout_weight="1"
             android:text="@string/cancel"
             android:padding="5dp"
+            android:layout_margin="5dp"
             android:background="@drawable/btn_holo_light_gray" />
         
         <Button
@@ -55,6 +57,7 @@
             android:layout_weight="1"
             android:text="@string/submit"
             android:padding="5dp"
+            android:layout_margin="5dp"
             android:background="@drawable/btn_holo_light_blue" />
     </LinearLayout>
 

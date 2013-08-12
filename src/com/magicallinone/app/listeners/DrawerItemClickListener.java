@@ -1,4 +1,4 @@
-package com.magicallinong.app.listeners;
+package com.magicallinone.app.listeners;
 
 import android.view.View;
 import android.widget.AdapterView;

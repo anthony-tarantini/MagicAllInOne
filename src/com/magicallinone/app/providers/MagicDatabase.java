@@ -3,10 +3,13 @@ package com.magicallinone.app.providers;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.magicallinone.app.application.MagicApplication;
 import com.magicallinone.app.datasets.CardTable;
 import com.magicallinone.app.datasets.CardsView;
+import com.magicallinone.app.datasets.DeckCardTable;
+import com.magicallinone.app.datasets.DeckListView;
 import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.datasets.SetCardTable;
 import com.magicallinone.app.datasets.SetTable;
@@ -108,29 +111,91 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			+ DeckTable.Columns.DECK_ID
 			+ ") ON CONFLICT REPLACE)"; 
 	
+	public static final String DB_CREATE_DECK_CARD = "CREATE TABLE "
+			+ MagicContentProvider.Paths.DECK_CARD + " ("
+			+ DeckCardTable.Columns.DECK_CARD_ID
+			+ " INTEGER PRIMARY KEY, "
+			+ DeckCardTable.Columns.DECK_ID
+			+ " INTEGER NOT NULL, "
+			+ DeckCardTable.Columns.CARD_ID
+			+ " INTEGER NOT NULL, "
+			+ DeckCardTable.Columns.QUANTITY
+			+ " INTEGER NOT NULL,  UNIQUE ("
+			+ DeckCardTable.Columns.DECK_ID 
+			+ ", "
+			+ DeckCardTable.Columns.CARD_ID
+			+ ") ON CONFLICT REPLACE)";
+			
 	public static final String DB_CREATE_CARDS_VIEW = "CREATE VIEW " 
 			+ MagicContentProvider.Paths.CARDS + " AS "
-			+ "SELECT (set_card." + SetCardTable.Columns.SET_CARD_ID
-			+ " + card." + CardTable.Columns.CARD_ID 
-			+ ") AS " + CardsView.Columns.CARD_ID
-			+ ", set_card." + SetCardTable.Columns.SET_CODE 
+			+ "SELECT " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.MULTIVERSE_ID 
+			+ " AS " + CardsView.Columns.CARD_ID
+			+ ", " + MagicContentProvider.Paths.SET_CARD 
+			+ "." + SetCardTable.Columns.SET_CODE 
 			+ " AS " + CardsView.Columns.SET_ID 
-			+ ", card." + CardTable.Columns.NAME
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.NAME
 			+ " AS " + CardsView.Columns.NAME
-			+ ", card." + CardTable.Columns.MANA_COST
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.MANA_COST
 			+ " AS " + CardsView.Columns.MANA_COST
-			+ ", card." + CardTable.Columns.TEXT
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.TEXT
 			+ " AS " + CardsView.Columns.RULES_TEXT
-			+ ", card." + CardTable.Columns.FLAVOUR
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.FLAVOUR
 			+ " AS " + CardsView.Columns.FLAVOUR_TEXT
-			+ ", card." + CardTable.Columns.NUMBER
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.NUMBER
 			+ " AS " + CardsView.Columns.NUMBER
-			+ ", card." + CardTable.Columns.WATERMARK
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.WATERMARK
 			+ " AS " + CardsView.Columns.WATERMARK
 			+ " FROM " + MagicContentProvider.Paths.CARD + " card" 
 			+ ", " + MagicContentProvider.Paths.SET_CARD + " set_card"
-			+ " WHERE card." + CardTable.Columns.MULTIVERSE_ID
+			+ " WHERE " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.MULTIVERSE_ID
 			+ " = " + SetCardTable.Columns.CARD_ID;
+	
+	public static final String DB_CREATE_DECK_LIST_VIEW = "CREATE VIEW " 
+			+ MagicContentProvider.Paths.DECK_LIST + " AS "
+			+ "SELECT ("+ MagicContentProvider.Paths.DECK_CARD 
+			+ "." + DeckCardTable.Columns.DECK_CARD_ID
+			+ " + " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.CARD_ID 
+			+ ") AS " + DeckListView.Columns.CARD_ID
+			+ ", " + MagicContentProvider.Paths.DECK_CARD 
+			+ "." + DeckCardTable.Columns.DECK_ID 
+			+ " AS " + DeckListView.Columns.DECK_ID 
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.NAME
+			+ " AS " + DeckListView.Columns.NAME
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.MANA_COST
+			+ " AS " + DeckListView.Columns.MANA_COST
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.TEXT
+			+ " AS " + DeckListView.Columns.RULES_TEXT
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.FLAVOUR
+			+ " AS " + DeckListView.Columns.FLAVOUR_TEXT
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.NUMBER
+			+ " AS " + DeckListView.Columns.NUMBER
+			+ ", " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.WATERMARK
+			+ " AS " + DeckListView.Columns.WATERMARK
+			+ ", " + MagicContentProvider.Paths.DECK_CARD 
+			+ "." + DeckCardTable.Columns.QUANTITY
+			+ " AS " + DeckListView.Columns.QUANTITY
+			+ " FROM " + MagicContentProvider.Paths.CARD 
+			+ " " + MagicContentProvider.Paths.CARD 
+			+ ", " + MagicContentProvider.Paths.DECK_CARD 
+			+ " " + MagicContentProvider.Paths.DECK_CARD
+			+ " WHERE " + MagicContentProvider.Paths.CARD 
+			+ "." + CardTable.Columns.MULTIVERSE_ID
+			+ " = " + MagicContentProvider.Paths.DECK_CARD + "." + DeckCardTable.Columns.CARD_ID;
 	
 	public MagicDatabase(final Context context) {
 		super(context, MagicApplication.DATABASE_NAME, null, MagicApplication.DATABASE_VERSION);
@@ -139,10 +204,13 @@ public class MagicDatabase extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
 		db.execSQL(DB_CREATE_SET);
+		Log.d("DATABASE VIEW", DB_CREATE_DECK_LIST_VIEW);
 		db.execSQL(DB_CREATE_CARD);
-		db.execSQL(DB_CREATE_SET_CARD);
-		db.execSQL(DB_CREATE_CARDS_VIEW);
 		db.execSQL(DB_CREATE_DECKS);
+		db.execSQL(DB_CREATE_SET_CARD);
+		db.execSQL(DB_CREATE_DECK_CARD);
+		db.execSQL(DB_CREATE_CARDS_VIEW);
+		db.execSQL(DB_CREATE_DECK_LIST_VIEW);
 	}
 
 	@Override
@@ -151,9 +219,11 @@ public class MagicDatabase extends SQLiteOpenHelper {
 		if (oldVersion < newVersion) {
 			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.SET);
 			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.CARD);
-			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.SET_CARD);
-			db.execSQL("DROP VIEW IF EXISTS " + MagicContentProvider.Paths.CARDS);
 			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.DECKS);
+			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.SET_CARD);
+			db.execSQL("DROP TABLE IF EXISTS " + MagicContentProvider.Paths.DECK_CARD);
+			db.execSQL("DROP VIEW IF EXISTS " + MagicContentProvider.Paths.CARDS);
+			db.execSQL("DROP VIEW IF EXISTS " + MagicContentProvider.Paths.DECK_LIST);
 			onCreate(db);
 		}
 	}

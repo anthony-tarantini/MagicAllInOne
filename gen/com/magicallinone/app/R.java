@@ -19,6 +19,9 @@ public final class R {
     }
     public static final class color {
         public static final int black=0x7f070001;
+        public static final int gray=0x7f070002;
+        public static final int translucent_gray=0x7f070003;
+        public static final int translucent_white=0x7f070004;
         public static final int white=0x7f070000;
     }
     public static final class dimen {
@@ -38,58 +41,88 @@ public final class R {
         public static final int btn_gray_pressed_holo_light=0x7f020009;
         public static final int btn_holo_light_blue=0x7f02000a;
         public static final int btn_holo_light_gray=0x7f02000b;
-        public static final int ic_app_icon=0x7f02000c;
-        public static final int ic_drawer=0x7f02000d;
-        public static final int placeholder=0x7f02000e;
+        public static final int card_stack=0x7f02000c;
+        public static final int dice=0x7f02000d;
+        public static final int ic_app_icon=0x7f02000e;
+        public static final int ic_drawer=0x7f02000f;
+        public static final int placeholder=0x7f020010;
+        public static final int plus=0x7f020011;
+        public static final int search=0x7f020012;
+        public static final int set=0x7f020013;
     }
     public static final class id {
-        public static final int action_add=0x7f0c001e;
-        public static final int action_placeholder=0x7f0c001d;
-        public static final int card_listing=0x7f0c0009;
+        public static final int action_add=0x7f0c0032;
+        public static final int action_placeholder=0x7f0c0031;
+        public static final int activity_deckbuilder_information=0x7f0c0001;
+        public static final int activity_deckbuilder_list=0x7f0c0002;
+        public static final int card_listing=0x7f0c000f;
         public static final int content_frame=0x7f0c0000;
-        public static final int dialog_new_deck_cancel=0x7f0c0007;
-        public static final int dialog_new_deck_description=0x7f0c0004;
-        public static final int dialog_new_deck_format=0x7f0c0005;
-        public static final int dialog_new_deck_seperator=0x7f0c0006;
-        public static final int dialog_new_deck_submit=0x7f0c0008;
-        public static final int dialog_new_deck_title=0x7f0c0003;
-        public static final int drawer_layout=0x7f0c0001;
-        public static final int fragment_decklist_list_view=0x7f0c000a;
-        public static final int fragment_decklist_no_items=0x7f0c000b;
-        public static final int left_drawer=0x7f0c0002;
-        public static final int list_item_card_flavour_text=0x7f0c0013;
-        public static final int list_item_card_image=0x7f0c000e;
-        public static final int list_item_card_mana_cost_layout=0x7f0c0012;
-        public static final int list_item_card_name=0x7f0c0010;
-        public static final int list_item_card_rules_text=0x7f0c0011;
-        public static final int list_item_card_watermark=0x7f0c000f;
-        public static final int list_item_deck_description=0x7f0c0016;
-        public static final int list_item_deck_format=0x7f0c0017;
-        public static final int list_item_deck_image=0x7f0c0014;
-        public static final int list_item_deck_size=0x7f0c0018;
-        public static final int list_item_deck_title=0x7f0c0015;
-        public static final int list_item_drawer_text=0x7f0c0019;
-        public static final int list_item_mana_symbol_image=0x7f0c001a;
-        public static final int list_item_set_logo=0x7f0c001c;
-        public static final int list_item_set_symbol=0x7f0c001b;
-        public static final int set_list=0x7f0c000c;
-        public static final int splash_image=0x7f0c000d;
+        public static final int dialog_add_card_cancel=0x7f0c0007;
+        public static final int dialog_add_card_count=0x7f0c0005;
+        public static final int dialog_add_card_seperator=0x7f0c0006;
+        public static final int dialog_add_card_submit=0x7f0c0008;
+        public static final int dialog_new_deck_cancel=0x7f0c000d;
+        public static final int dialog_new_deck_description=0x7f0c000a;
+        public static final int dialog_new_deck_format=0x7f0c000b;
+        public static final int dialog_new_deck_seperator=0x7f0c000c;
+        public static final int dialog_new_deck_submit=0x7f0c000e;
+        public static final int dialog_new_deck_title=0x7f0c0009;
+        public static final int drawer_layout=0x7f0c0003;
+        public static final int fragment_deck_card_list_add=0x7f0c0012;
+        public static final int fragment_deck_card_list_list=0x7f0c0010;
+        public static final int fragment_deck_card_list_no_items=0x7f0c0011;
+        public static final int fragment_deck_information_description=0x7f0c0015;
+        public static final int fragment_deck_information_format=0x7f0c0016;
+        public static final int fragment_deck_information_image=0x7f0c0013;
+        public static final int fragment_deck_information_size=0x7f0c0017;
+        public static final int fragment_deck_information_title=0x7f0c0014;
+        public static final int fragment_decklist_list_view=0x7f0c0018;
+        public static final int fragment_decklist_no_items=0x7f0c0019;
+        public static final int left_drawer=0x7f0c0004;
+        public static final int list_item_card_flavour_text=0x7f0c0021;
+        public static final int list_item_card_image=0x7f0c001c;
+        public static final int list_item_card_mana_cost_layout=0x7f0c0020;
+        public static final int list_item_card_name=0x7f0c001e;
+        public static final int list_item_card_rules_text=0x7f0c001f;
+        public static final int list_item_card_watermark=0x7f0c001d;
+        public static final int list_item_deck_buttons=0x7f0c0022;
+        public static final int list_item_deck_card_mana_cost_layout=0x7f0c002a;
+        public static final int list_item_deck_card_name=0x7f0c0029;
+        public static final int list_item_deck_card_quantity=0x7f0c002b;
+        public static final int list_item_deck_description=0x7f0c0028;
+        public static final int list_item_deck_format=0x7f0c0023;
+        public static final int list_item_deck_image=0x7f0c0026;
+        public static final int list_item_deck_image_layout=0x7f0c0025;
+        public static final int list_item_deck_size=0x7f0c0024;
+        public static final int list_item_deck_title=0x7f0c0027;
+        public static final int list_item_drawer_image=0x7f0c002c;
+        public static final int list_item_drawer_text=0x7f0c002d;
+        public static final int list_item_mana_symbol_image=0x7f0c002e;
+        public static final int list_item_set_logo=0x7f0c0030;
+        public static final int list_item_set_symbol=0x7f0c002f;
+        public static final int set_list=0x7f0c001a;
+        public static final int splash_image=0x7f0c001b;
     }
     public static final class layout {
         public static final int activity_card_list=0x7f030000;
         public static final int activity_deckbuilder=0x7f030001;
         public static final int activity_main=0x7f030002;
-        public static final int activity_splash=0x7f030003;
-        public static final int dialog_new_deck=0x7f030004;
-        public static final int fragment_card_list=0x7f030005;
-        public static final int fragment_decklist=0x7f030006;
-        public static final int fragment_sets_list=0x7f030007;
-        public static final int fragment_splash=0x7f030008;
-        public static final int list_item_card=0x7f030009;
-        public static final int list_item_deck=0x7f03000a;
-        public static final int list_item_drawer=0x7f03000b;
-        public static final int list_item_mana_symbol=0x7f03000c;
-        public static final int list_item_set=0x7f03000d;
+        public static final int activity_sets_list=0x7f030003;
+        public static final int activity_splash=0x7f030004;
+        public static final int dialog_add_card=0x7f030005;
+        public static final int dialog_new_deck=0x7f030006;
+        public static final int fragment_card_list=0x7f030007;
+        public static final int fragment_deck_card_list=0x7f030008;
+        public static final int fragment_deck_information=0x7f030009;
+        public static final int fragment_decklist=0x7f03000a;
+        public static final int fragment_sets_list=0x7f03000b;
+        public static final int fragment_splash=0x7f03000c;
+        public static final int list_item_card=0x7f03000d;
+        public static final int list_item_deck=0x7f03000e;
+        public static final int list_item_deck_card=0x7f03000f;
+        public static final int list_item_drawer=0x7f030010;
+        public static final int list_item_mana_symbol=0x7f030011;
+        public static final int list_item_set=0x7f030012;
     }
     public static final class menu {
         public static final int deck_list_fragment=0x7f0b0000;
@@ -100,20 +133,25 @@ public final class R {
     }
     public static final class string {
         public static final int action_settings=0x7f090001;
+        public static final int add_cards=0x7f090011;
         public static final int add_deck=0x7f090007;
         public static final int apiservice=0x7f090002;
         public static final int app_name=0x7f090000;
         public static final int cancel=0x7f09000c;
+        public static final int deck_builder=0x7f090010;
         public static final int deck_description=0x7f09000a;
         public static final int deck_format=0x7f09000b;
         public static final int deck_title=0x7f090009;
         public static final int deckbuilder=0x7f090006;
         public static final int format=0x7f09000f;
         public static final int life_counter=0x7f090004;
+        public static final int quantity=0x7f090013;
         public static final int search=0x7f090005;
         public static final int sets=0x7f090003;
         public static final int size=0x7f09000e;
         public static final int submit=0x7f09000d;
+        public static final int this_deck_is_empty=0x7f090012;
+        public static final int x=0x7f090014;
         public static final int you_have_no_saved_decks=0x7f090008;
     }
     public static final class style {

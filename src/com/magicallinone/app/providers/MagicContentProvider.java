@@ -24,6 +24,8 @@ public class MagicContentProvider extends ContentProvider {
 		public static final Uri SET_CARD_URI = Uri.parse(BASE_URI + "/" + Paths.SET_CARD);
 		public static final Uri CARDS_URI = Uri.parse(BASE_URI + "/" + Paths.CARDS);
 		public static final Uri DECKS_URI = Uri.parse(BASE_URI + "/" + Paths.DECKS);
+		public static final Uri DECK_CARD_URI = Uri.parse(BASE_URI + "/" + Paths.DECK_CARD);
+		public static final Uri DECK_LIST_URI = Uri.parse(BASE_URI + "/" + Paths.DECK_LIST);
 	}
 
 	public static final class Paths {
@@ -32,6 +34,8 @@ public class MagicContentProvider extends ContentProvider {
 		public static final String SET_CARD = "set_card";
 		public static final String CARDS = "cards";
 		public static final String DECKS = "deck";
+		public static final String DECK_CARD = "card_deck";
+		public static final String DECK_LIST = "deck_list";
 	}
 
 	public static final class Codes {
@@ -45,6 +49,10 @@ public class MagicContentProvider extends ContentProvider {
 		public static final int CARDS_STAR = 8;
 		public static final int DECKS = 9;
 		public static final int DECKS_STAR = 10;
+		public static final int DECK_CARD = 11;
+		public static final int DECK_CARD_STAR = 12;
+		public static final int DECK_LIST = 13;
+		public static final int DECK_LIST_STAR = 14;
 	}
 
 	@Override
@@ -60,6 +68,10 @@ public class MagicContentProvider extends ContentProvider {
 		URI_MATCHER.addURI(AUTHORITY, Paths.CARDS + "/*", Codes.CARDS_STAR);
 		URI_MATCHER.addURI(AUTHORITY, Paths.DECKS, Codes.DECKS);
 		URI_MATCHER.addURI(AUTHORITY, Paths.DECKS + "/*", Codes.DECKS_STAR);
+		URI_MATCHER.addURI(AUTHORITY, Paths.DECK_CARD, Codes.DECK_CARD);
+		URI_MATCHER.addURI(AUTHORITY, Paths.DECK_CARD + "/*", Codes.DECK_CARD_STAR);
+		URI_MATCHER.addURI(AUTHORITY, Paths.DECK_LIST, Codes.DECK_LIST);
+		URI_MATCHER.addURI(AUTHORITY, Paths.DECK_LIST + "/*", Codes.DECK_LIST_STAR);
 		return true;
 	}
 
@@ -85,6 +97,10 @@ public class MagicContentProvider extends ContentProvider {
 			id = insertDB.insert(Paths.DECKS, null, values);
 			getContext().getContentResolver().notifyChange(uri, null);
 			return Uris.DECKS_URI.buildUpon().appendPath(String.valueOf(id)).build();
+		case Codes.DECK_CARD:
+			id = insertDB.insert(Paths.DECK_CARD, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return Uris.DECK_CARD_URI.buildUpon().appendPath(String.valueOf(id)).build();
 		default:
 			throw new UnsupportedOperationException("URI: " + uri + " not supported.");
 		}
@@ -117,6 +133,16 @@ public class MagicContentProvider extends ContentProvider {
 		case Codes.DECKS_STAR:
 			builder = new SQLiteQueryBuilder();
 			builder.setTables(Paths.DECKS);
+			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
+		case Codes.DECK_CARD:
+		case Codes.DECK_CARD_STAR:
+			builder = new SQLiteQueryBuilder();
+			builder.setTables(Paths.DECK_CARD);
+			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
+		case Codes.DECK_LIST:
+		case Codes.DECK_LIST_STAR:
+			builder = new SQLiteQueryBuilder();
+			builder.setTables(Paths.DECK_LIST);
 			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
 		default:
 			return null;

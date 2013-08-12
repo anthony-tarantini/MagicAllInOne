@@ -3,8 +3,6 @@ package com.magicallinone.app.fragment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -17,10 +15,7 @@ import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +32,11 @@ import android.widget.TextView.BufferType;
 import com.magicallinone.app.R;
 import com.magicallinone.app.application.MagicApplication;
 import com.magicallinone.app.datasets.CardsView;
+import com.magicallinone.app.listeners.OnCardSelectedListener;
 import com.magicallinone.app.managers.FontManager;
 import com.magicallinone.app.providers.MagicContentProvider;
 import com.magicallinone.app.services.ApiService;
 import com.magicallinone.app.utils.ImageUtils;
-import com.xtremelabs.imageutils.ImageLoader;
 
 public class CardListFragment extends BaseFragment implements ViewBinder,
 		OnItemClickListener, LoaderCallbacks<Cursor> {
@@ -73,10 +68,10 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	private ListView mListView;
 	private String mSetId;
 	private CursorLoader mCursorLoader;
-	private ImageLoader mLoader;
 	private SetReceiver mReceiver;
 	private IntentFilter mFilter;
 	private ProgressDialog mProgressDialog;
+	private OnCardSelectedListener mOnCardSelectedListener;
 
 	public static CardListFragment newInstance(String setId) {
 		CardListFragment cardListFragment = new CardListFragment();
@@ -94,16 +89,16 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mSetId = getArguments().getString(Extras.SET);
-
 		mProgressDialog = new ProgressDialog(getActivity());
 		mProgressDialog.setTitle("Loading Cards");
 		mProgressDialog.setMessage("Stand By ...");
+		mProgressDialog.setCancelable(false);
 		mProgressDialog.show();
 		
+		mSetId = getArguments().getString(Extras.SET);
+		
 		mLoaderManager = getLoaderManager();
-		mLoader = ImageLoader.buildImageLoaderForFragment(this);
-		mLoader.setDefaultOptions(MagicApplication.getImageLoaderOptions());
+		getImageLoader().setDefaultOptions(MagicApplication.getImageLoaderOptions());
 
 		createReceiver();
 		startApiService();
@@ -123,8 +118,6 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemClickListener(this);
 		mLoaderManager = getLoaderManager();
-		mLoader = ImageLoader.buildImageLoaderForFragment(this);
-		mLoader.setDefaultOptions(MagicApplication.getImageLoaderOptions());
 
 		return view;
 	}
@@ -136,6 +129,8 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
+		int cardId = ((Integer) view.findViewById(R.id.list_item_card_image).getTag()).intValue();
+		mOnCardSelectedListener.onCardSelected(cardId);
 	}
 
 	@Override
@@ -149,7 +144,7 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 			String text = cursor.getString(columnIndex);
 			textView.setTypeface(FontManager.INSTANCE.getAppFont());
 			if (text != null) {
-				textView.setText(replaceManaSymbols(text), BufferType.SPANNABLE);
+				textView.setText(ImageUtils.replaceManaSymbols(getActivity(), text), BufferType.SPANNABLE);
 			} else {
 				textView.setText(text);
 			}
@@ -169,86 +164,30 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 			return true;
 		case R.id.list_item_card_mana_cost_layout:
 			List<MatchResult> manaSymbols = new ArrayList<MatchResult>();
-			getManaSymbols(cursor.getString(columnIndex), manaSymbols);
+			ImageUtils.getManaSymbols(cursor.getString(columnIndex), manaSymbols);
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			linearLayout = (LinearLayout) view;
 			linearLayout.removeAllViews();
 			if (manaSymbols != null) {
-				addManaSymbols(inflater, linearLayout, manaSymbols);
+				ImageUtils.addManaSymbols(getActivity(), inflater, linearLayout, manaSymbols);
 			}
 			return true;
 		case R.id.list_item_card_watermark:
 			String watermark = cursor.getString(columnIndex);
 			imageView = (ImageView) view;
 			if (watermark != null && !watermark.equals(""))
-				getWatermark(imageView, watermark);
+				ImageUtils.getWatermark(getActivity(), imageView, watermark);
 			else
 				imageView.setVisibility(View.GONE);
 			return true;
 		case R.id.list_item_card_image:
 			imageView = (ImageView) view;
-			mLoader.loadImage(imageView,
-					ImageUtils.getImageUrl(mSetId, cursor.getInt(columnIndex)));
+			getImageLoader().loadImage(imageView,
+					ImageUtils.getImageUrl(cursor.getString(cursor.getColumnIndex(CardsView.Columns.SET_ID)), cursor.getInt(columnIndex)));
+			imageView.setTag(cursor.getInt(cursor.getColumnIndex(CardsView.Columns.CARD_ID)));
 			return true;
 		}
 		return false;
-	}
-
-	private Spannable replaceManaSymbols(String text) {
-		SpannableStringBuilder spannableText = new SpannableStringBuilder(text);
-		List<MatchResult> matchResults = new ArrayList<MatchResult>();
-		getManaSymbols(text, matchResults);
-		for (MatchResult matchResult : matchResults) {
-			Drawable drawable = ImageUtils.getDrawable(getActivity(),
-					ImageUtils.Folders.MANA_SYMBOLS,
-					createFilename(matchResult));
-			if (drawable != null) {
-				spannableText.setSpan(ImageUtils.getManaSymbolImageSpan(
-						getActivity(), drawable), matchResult.start(),
-						matchResult.end(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-			}
-		}
-		return spannableText;
-	}
-
-	private void getWatermark(ImageView imageView, String watermark) {
-		imageView.setImageDrawable(ImageUtils.getDrawable(getActivity(),
-				ImageUtils.Folders.WATERMARKS, watermark));
-		imageView.setVisibility(View.VISIBLE);
-	}
-
-	private void getManaSymbols(String manaCost, List<MatchResult> matchResults) {
-		if (manaCost != null && !manaCost.equals("")) {
-			Pattern pattern = Pattern.compile("\\{(.*?)\\}");
-			Matcher matcher = pattern.matcher(manaCost);
-			while (matcher.find()) {
-				matchResults.add(matcher.toMatchResult());
-			}
-		}
-	}
-
-	private void addManaSymbols(LayoutInflater inflater,
-			LinearLayout linearLayout, List<MatchResult> manaSymbols) {
-		for (MatchResult symbol : manaSymbols) {
-			addSymbol(inflater, linearLayout, symbol);
-		}
-	}
-
-	private void addSymbol(LayoutInflater inflater, LinearLayout linearLayout,
-			MatchResult symbol) {
-		View manaSymbol = inflater
-				.inflate(R.layout.list_item_mana_symbol, null);
-		((ImageView) manaSymbol.findViewById(R.id.list_item_mana_symbol_image))
-				.setImageDrawable(ImageUtils
-						.getDrawable(getActivity(),
-								ImageUtils.Folders.MANA_SYMBOLS,
-								createFilename(symbol)));
-		linearLayout.addView(manaSymbol);
-	}
-
-	private String createFilename(MatchResult result) {
-		return result.group().replace("/", "_").replace("{", "")
-				.replace("}", "").toLowerCase();
 	}
 
 	@Override
@@ -301,5 +240,9 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 		super.onResume();
 		createReceiver();
 		getActivity().registerReceiver(mReceiver, mFilter);
+	}
+	
+	public void setOnCardSelectedListener(OnCardSelectedListener listener){
+		mOnCardSelectedListener = listener;
 	}
 }

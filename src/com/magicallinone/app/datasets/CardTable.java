@@ -1,8 +1,9 @@
 package com.magicallinone.app.datasets;
 
-import com.magicallinone.app.models.Card;
-
 import android.content.ContentValues;
+import android.util.Log;
+
+import com.magicallinone.app.models.Card;
 
 public class CardTable {
 	public static class Columns {
@@ -40,6 +41,14 @@ public class CardTable {
 		contentValues.put(Columns.NUMBER, card.number);
 		contentValues.put(Columns.MULTIVERSE_ID, card.multiverseid);
 		contentValues.put(Columns.WATERMARK, card.watermark);
+		contentValues.put(Columns.COLORS, getCardColours(card.colors));
 		return contentValues;
+	}
+
+	private static String getCardColours(String[] colours){
+		String cardColours = "";
+		for (String colour : colours)
+			cardColours += colour.charAt(0);
+		return cardColours.toLowerCase();
 	}
 }

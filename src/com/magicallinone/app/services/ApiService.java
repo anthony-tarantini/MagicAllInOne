@@ -19,6 +19,7 @@ import android.util.Log;
 import com.google.gson.reflect.TypeToken;
 import com.magicallinone.app.application.MagicApplication;
 import com.magicallinone.app.datasets.CardTable;
+import com.magicallinone.app.datasets.DeckCardTable;
 import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.datasets.SetCardTable;
 import com.magicallinone.app.datasets.SetTable;
@@ -42,12 +43,16 @@ public class ApiService extends IntentService {
 		public static final String TITLE = "title";
 		public static final String DESCRIPTION = "description";
 		public static final String FORMAT = "format";
+		public static final String DECK_ID = "deck_id";
+		public static final String CARD_ID = "card_id";
+		public static final String QUANTITY = "quantity";
 	}
 
 	public static final class Operations {
 		public static final int SET_LIST = 1;
 		public static final int SINGLE_SET = 2;
 		public static final int ADD_DECK = 3;
+		public static final int ADD_CARD = 4;
 	}
 
 	public static final String SETS = "sets/";
@@ -76,6 +81,10 @@ public class ApiService extends IntentService {
 			break;
 		case Operations.ADD_DECK:
 			addDeck(operations, intent);
+			break;
+		case Operations.ADD_CARD:
+			addCard(operations, intent);
+			break;
 		default:
 			break;
 		}
@@ -144,6 +153,16 @@ public class ApiService extends IntentService {
 		Deck deck = new Deck(intent.getStringExtra(Extras.TITLE), intent.getStringExtra(Extras.DESCRIPTION), 0, intent.getStringExtra(Extras.FORMAT));
 		final ContentValues deckValues = DeckTable.getContentValues(deck);
 		operation = ContentProviderOperation.newInsert(MagicContentProvider.Uris.DECKS_URI).withValues(deckValues).build();
+		operations.add(operation);
+	}
+	
+	private void addCard(final ArrayList<ContentProviderOperation> operations, Intent intent){
+		ContentProviderOperation operation;
+		ContentValues deckCardValues = new ContentValues();
+		deckCardValues.put(DeckCardTable.Columns.DECK_ID, intent.getIntExtra(Extras.DECK_ID, -1));
+		deckCardValues.put(DeckCardTable.Columns.CARD_ID, intent.getIntExtra(Extras.CARD_ID, -1));
+		deckCardValues.put(DeckCardTable.Columns.QUANTITY, intent.getIntExtra(Extras.QUANTITY, -1));
+		operation = ContentProviderOperation.newInsert(MagicContentProvider.Uris.DECK_CARD_URI).withValues(deckCardValues).build();
 		operations.add(operation);
 	}
 	

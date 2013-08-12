@@ -37,6 +37,16 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.magicallinone.app.activities.DeckbuilderActivity"
+            android:label="@string/deck_builder"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.magicallinone.app.activities.SetsListActivity"
+            android:label="@string/add_cards"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <service android:name="com.magicallinone.app.services.ApiService" />
 

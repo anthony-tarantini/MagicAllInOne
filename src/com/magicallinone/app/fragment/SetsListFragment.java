@@ -17,6 +17,7 @@ import android.widget.ListView;
 
 import com.magicallinone.app.R;
 import com.magicallinone.app.activities.CardListActivity;
+import com.magicallinone.app.activities.SetsListActivity;
 import com.magicallinone.app.datasets.SetTable;
 import com.magicallinone.app.providers.MagicContentProvider;
 import com.magicallinone.app.utils.ImageUtils;
@@ -28,18 +29,28 @@ public class SetsListFragment extends BaseFragment implements
 	private SimpleCursorAdapter mAdapter;
 	private CursorLoader mCursorLoader;
 	private ListView mListView;
+	private int mDeckId;
 
 	private static final String[] COLUMNS = { SetTable.Columns.CODE,
 			SetTable.Columns.CODE, };
 	private static final int[] VIEWS = { R.id.list_item_set_symbol,
 			R.id.list_item_set_logo, };
+	
+	public static final class Arguments {
+		public static final String DECK_ID = "deck_id";
+	}
 
-	public static SetsListFragment newInstance() {
+	public static SetsListFragment newInstance(){
+		return newInstance(-1);
+	}
+	
+	public static SetsListFragment newInstance(int deckId) {
 		SetsListFragment setsListFragment = new SetsListFragment();
 		Bundle args = setsListFragment.getArguments();
 		if (args == null) {
 			args = new Bundle();
 		}
+		args.putInt(Arguments.DECK_ID, deckId);
 		setsListFragment.setArguments(args);
 		return setsListFragment;
 	}
@@ -48,6 +59,7 @@ public class SetsListFragment extends BaseFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mLoaderManager = getLoaderManager();
+		mDeckId = getArguments().getInt(Arguments.DECK_ID);
 	}
 
 	@Override
@@ -93,7 +105,10 @@ public class SetsListFragment extends BaseFragment implements
 			int position, long id) {
 		String tag = (String) view.findViewById(R.id.list_item_set_symbol)
 				.getTag();
-		CardListActivity.newInstance(getActivity(), tag);
+		if (getActivity() instanceof SetsListActivity)
+			CardListActivity.newInstanceForResult(getActivity(), tag, mDeckId);
+		else 
+			CardListActivity.newInstance(getActivity(), tag);
 	}
 
 	@Override

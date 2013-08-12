@@ -27,11 +27,12 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
 
 import com.magicallinone.app.R;
+import com.magicallinone.app.activities.DeckbuilderActivity;
 import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.managers.FontManager;
+import com.magicallinone.app.models.Deck;
 import com.magicallinone.app.providers.MagicContentProvider;
 import com.magicallinone.app.services.ApiService;
-import com.xtremelabs.imageutils.ImageLoader;
 
 public class DeckListFragment extends BaseFragment implements ViewBinder,
 		LoaderCallbacks<Cursor>, OnItemClickListener {
@@ -45,7 +46,6 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 
 	private ProgressDialog mProgressDialog;
 	private LoaderManager mLoaderManager;
-	private ImageLoader mLoader;
 	private ListView mListView;
 	private TextView mEmptyView;
 	private CursorLoader mCursorLoader;
@@ -74,19 +74,22 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_decklist, container, false);
+		View view = inflater.inflate(R.layout.fragment_decklist, container,
+				false);
 
 		mLoaderManager = getLoaderManager();
-		mLoader = ImageLoader.buildImageLoaderForFragment(this);
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				R.layout.list_item_deck, null, COLUMNS, VIEWS, 0);
 		mAdapter.setViewBinder(this);
-		
-		mListView = (ListView) view.findViewById(R.id.fragment_decklist_list_view);
+
+		mListView = (ListView) view
+				.findViewById(R.id.fragment_decklist_list_view);
 		mListView.setAdapter(mAdapter);
-		
-		mEmptyView = (TextView) view.findViewById(R.id.fragment_decklist_no_items);
-		
+		mListView.setOnItemClickListener(this);
+
+		mEmptyView = (TextView) view
+				.findViewById(R.id.fragment_decklist_no_items);
+
 		loadDecklist();
 
 		return view;
@@ -99,6 +102,16 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
+		Deck deck = new Deck(
+				(String) view.findViewById(R.id.list_item_deck_title).getTag(),
+				(String) view.findViewById(R.id.list_item_deck_description)
+						.getTag(),
+				((Integer) view.findViewById(R.id.list_item_deck_size).getTag())
+						.intValue(), (String) view.findViewById(
+						R.id.list_item_deck_format).getTag(), ((Integer) view
+						.findViewById(R.id.list_item_deck_image).getTag())
+						.intValue());
+		DeckbuilderActivity.newInstance(getActivity(), deck);
 	}
 
 	@Override
@@ -106,24 +119,30 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 		TextView textView;
 		switch (view.getId()) {
 		case R.id.list_item_deck_image:
-			mLoader.loadImageFromResource((ImageView) view,
+			getImageLoader().loadImageFromResource((ImageView) view,
 					R.drawable.ic_app_icon);
+			view.setTag(cursor.getInt(columnIndex));
 			return true;
 		case R.id.list_item_deck_title:
 		case R.id.list_item_deck_description:
 			textView = (TextView) view;
 			textView.setTypeface(FontManager.INSTANCE.getAppFont());
 			textView.setText(cursor.getString(columnIndex));
+			view.setTag(cursor.getString(columnIndex));
 			return true;
 		case R.id.list_item_deck_format:
 			textView = (TextView) view;
 			textView.setTypeface(FontManager.INSTANCE.getAppFont());
-			textView.setText(getActivity().getString(R.string.format) + cursor.getString(columnIndex));
+			textView.setText(getActivity().getString(R.string.format)
+					+ cursor.getString(columnIndex));
+			view.setTag(cursor.getString(columnIndex));
 			return true;
 		case R.id.list_item_deck_size:
 			textView = (TextView) view;
 			textView.setTypeface(FontManager.INSTANCE.getAppFont());
-			textView.setText(getActivity().getString(R.string.size) + cursor.getString(columnIndex));
+			textView.setText(getActivity().getString(R.string.size)
+					+ cursor.getString(columnIndex));
+			view.setTag(cursor.getInt(columnIndex));
 			return true;
 		}
 		return false;
@@ -132,7 +151,7 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		mProgressDialog = new ProgressDialog(getActivity());
-		mProgressDialog.setTitle("Loading Cards");
+		mProgressDialog.setTitle("Loading Decks");
 		mProgressDialog.setMessage("Stand By ...");
 		mProgressDialog.show();
 
@@ -144,10 +163,13 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		mProgressDialog.dismiss();
-		if (mAdapter != null && cursor != null && cursor.moveToFirst()) {
+		if (mAdapter != null && cursor != null) {
 			cursor.setNotificationUri(getActivity().getContentResolver(),
 					MagicContentProvider.Uris.DECKS_URI);
 			mAdapter.swapCursor(cursor);
+		}
+		if (cursor != null && cursor.moveToFirst()) {
+			showDeckListScreen();
 		} else {
 			showNoDeckScreen();
 		}
@@ -165,6 +187,11 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 		mListView.setVisibility(View.GONE);
 		mEmptyView.setTypeface(FontManager.INSTANCE.getAppFont());
 		mEmptyView.setVisibility(View.VISIBLE);
+	}
+
+	private void showDeckListScreen() {
+		mListView.setVisibility(View.VISIBLE);
+		mEmptyView.setVisibility(View.GONE);
 	}
 
 	@Override

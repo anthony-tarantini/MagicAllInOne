@@ -17,4 +17,9 @@
 	<string name="submit">SUBMIT</string>
 	<string name="size">"SIZE: "</string>
 	<string name="format">"FORMAT: "</string>
+	<string name="deck_builder">DECK BUILDER</string>
+	<string name="add_cards">ADD CARDS</string>
+	<string name="this_deck_is_empty">THIS DECK IS EMPTY</string>
+	<string name="quantity">QUANTITY</string>
+	<string name="x">x</string>
 </resources>
