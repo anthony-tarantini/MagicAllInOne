@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.magicallinone.app.R;
+import com.magicallinone.app.activities.BaseFragmentActivity.RequestCodes;
 import com.magicallinone.app.activities.CardListActivity;
 import com.magicallinone.app.activities.SetsListActivity;
 import com.magicallinone.app.datasets.SetTable;
@@ -106,7 +107,7 @@ public class SetsListFragment extends BaseFragment implements
 		String tag = (String) view.findViewById(R.id.list_item_set_symbol)
 				.getTag();
 		if (getActivity() instanceof SetsListActivity)
-			CardListActivity.newInstanceForResult(getActivity(), tag, mDeckId);
+			CardListActivity.newInstanceForResult(getActivity(), tag, mDeckId, RequestCodes.ADD_CARD_SET_REQUEST);
 		else 
 			CardListActivity.newInstance(getActivity(), tag);
 	}

@@ -1,7 +1,6 @@
 package com.magicallinone.app.datasets;
 
 import android.content.ContentValues;
-import android.util.Log;
 
 import com.magicallinone.app.models.Card;
 

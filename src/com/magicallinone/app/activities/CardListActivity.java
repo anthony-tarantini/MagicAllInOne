@@ -20,43 +20,52 @@ import com.magicallinone.app.listeners.OnCardSelectedListener;
 import com.magicallinone.app.managers.FontManager;
 import com.magicallinone.app.services.ApiService;
 
-public class CardListActivity extends BaseFragmentActivity implements OnCardSelectedListener {
+public class CardListActivity extends BaseFragmentActivity implements
+		OnCardSelectedListener {
 
 	public static final class Extras {
 		public static final String SET = "set";
 		public static final String DECK_ID = "deck_id";
+		public static final String REQUEST_CODE = "request_code";
 	}
 
 	private String mSetId;
 	private AlertDialog mAlertDialog;
 	private int mDeckId;
-	
+	private int mRequestCode;
+
 	public static void newInstance(final Context context, final String set) {
 		final Intent intent = new Intent(context, CardListActivity.class);
 		intent.putExtra(Extras.SET, set);
 		context.startActivity(intent);
 	}
-	
-	public static void newInstanceForResult(final Activity activity, final String set, final int deckId) {
+
+	public static void newInstanceForResult(final Activity activity,
+			final String set, final int deckId, final int requestCode) {
 		final Intent intent = new Intent(activity, CardListActivity.class);
 		intent.putExtra(Extras.SET, set);
 		intent.putExtra(Extras.DECK_ID, deckId);
-		activity.startActivityForResult(intent, RequestCodes.ADD_CARD_SET_REQUEST);
+		intent.putExtra(Extras.REQUEST_CODE, requestCode);
+		activity.startActivityForResult(intent,
+				RequestCodes.ADD_CARD_SET_REQUEST);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_card_list);
-		
+
 		mSetId = getIntent().getStringExtra(Extras.SET);
 		mDeckId = getIntent().getIntExtra(Extras.DECK_ID, -1);
-		
+		mRequestCode = getIntent().getIntExtra(Extras.REQUEST_CODE, -1);
+
 		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		FragmentTransaction fragmentTransaction = fragmentManager
+				.beginTransaction();
 		CardListFragment fragment = CardListFragment.newInstance(mSetId);
 		fragment.setOnCardSelectedListener(this);
-		fragmentTransaction.add(R.id.content_frame, fragment, CardListFragment.class.getCanonicalName());
+		fragmentTransaction.add(R.id.content_frame, fragment,
+				CardListFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
 		ActionBar supportActionBar = getActionBar();
@@ -66,9 +75,10 @@ public class CardListActivity extends BaseFragmentActivity implements OnCardSele
 
 	@Override
 	public void onCardSelected(int cardId) {
-		showNewDeckDialog(cardId);
+		if (mRequestCode == RequestCodes.ADD_CARD_SET_REQUEST)
+			showNewDeckDialog(cardId);
 	}
-	
+
 	private void showNewDeckDialog(final int cardId) {
 		LayoutInflater inflater = this.getLayoutInflater();
 
@@ -97,7 +107,8 @@ public class CardListActivity extends BaseFragmentActivity implements OnCardSele
 			@Override
 			public void onClick(View v) {
 				mAlertDialog.dismiss();
-				addNewCard(cardId, Integer.parseInt(countEditText.getText().toString()));
+				addNewCard(cardId,
+						Integer.parseInt(countEditText.getText().toString()));
 				finish();
 			}
 		});
@@ -105,8 +116,8 @@ public class CardListActivity extends BaseFragmentActivity implements OnCardSele
 		mAlertDialog = builder.create();
 		mAlertDialog.show();
 	}
-	
-	private void addNewCard(int cardId, int quantity){
+
+	private void addNewCard(int cardId, int quantity) {
 		Intent intent = new Intent(this, ApiService.class);
 		intent.putExtra(ApiService.Extras.OPERATION,
 				ApiService.Operations.ADD_CARD);
@@ -115,7 +126,7 @@ public class CardListActivity extends BaseFragmentActivity implements OnCardSele
 		intent.putExtra(ApiService.Extras.QUANTITY, quantity);
 		startService(intent);
 	}
-	
+
 	@Override
 	public void finish() {
 		Intent intent = new Intent();
