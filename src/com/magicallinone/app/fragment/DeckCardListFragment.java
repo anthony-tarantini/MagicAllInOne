@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
 
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -29,6 +32,7 @@ import com.magicallinone.app.R;
 import com.magicallinone.app.activities.SetsListActivity;
 import com.magicallinone.app.datasets.CardsView;
 import com.magicallinone.app.datasets.DeckListView;
+import com.magicallinone.app.dialogfragments.CardDetailDialogFragment;
 import com.magicallinone.app.managers.FontManager;
 import com.magicallinone.app.providers.MagicContentProvider;
 import com.magicallinone.app.utils.ImageUtils;
@@ -41,6 +45,11 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 
 	public static final class Arguments {
 		public static final String DECK_ID = "deck_id";
+	}
+	
+	public static final class Keys {
+		public static final int SET_ID = 1;
+		public static final int CARD_NUMBER = 2;
 	}
 
 	public static final String[] COLUMNS = { DeckListView.Columns.NAME,
@@ -181,6 +190,7 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 					Typeface.BOLD);
 			textView.setTextSize(18);
 			textView.setText(cursor.getString(columnIndex));
+			textView.setTag(cursor.getString(cursor.getColumnIndex(DeckListView.Columns.SET_ID)));
 			return true;
 		case R.id.list_item_deck_card_mana_cost_layout:
 			List<MatchResult> manaSymbols = new ArrayList<MatchResult>();
@@ -198,6 +208,7 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 			textView = (TextView) view;
 			textView.setTypeface(FontManager.INSTANCE.getAppFont());
 			textView.setTextSize(20);
+			textView.setTag(cursor.getString(cursor.getColumnIndex(DeckListView.Columns.NUMBER)));
 			textView.setText(getActivity().getString(R.string.x) + cursor.getString(columnIndex));
 			return true;
 		}
@@ -205,7 +216,15 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		String setId = (String) view.findViewById(R.id.list_item_deck_card_name).getTag();
+		int cardNumber = Integer.parseInt(((String) view.findViewById(R.id.list_item_deck_card_quantity).getTag()));
+		final CardDetailDialogFragment fragment = CardDetailDialogFragment.newInstance(setId, cardNumber);
+		fragment.setStyle(DialogFragment.STYLE_NO_FRAME | DialogFragment.STYLE_NO_TITLE, 0);
+		final FragmentManager fragmentManager = getChildFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.add(fragment, CardDetailDialogFragment.class.getCanonicalName());
+		fragmentTransaction.commit();
 	}
 
 	@Override

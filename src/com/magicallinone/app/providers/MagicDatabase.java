@@ -171,6 +171,9 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			+ ", " + MagicContentProvider.Paths.CARD 
 			+ "." + CardTable.Columns.NAME
 			+ " AS " + DeckListView.Columns.NAME
+			+ ", " + MagicContentProvider.Paths.SET_CARD 
+			+ "." + SetCardTable.Columns.SET_CODE
+			+ " AS " + DeckListView.Columns.SET_ID
 			+ ", " + MagicContentProvider.Paths.CARD 
 			+ "." + CardTable.Columns.MANA_COST
 			+ " AS " + DeckListView.Columns.MANA_COST
@@ -193,9 +196,13 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			+ " " + MagicContentProvider.Paths.CARD 
 			+ ", " + MagicContentProvider.Paths.DECK_CARD 
 			+ " " + MagicContentProvider.Paths.DECK_CARD
+			+ ", " + MagicContentProvider.Paths.SET_CARD
+			+ " " + MagicContentProvider.Paths.SET_CARD
 			+ " WHERE " + MagicContentProvider.Paths.CARD 
 			+ "." + CardTable.Columns.MULTIVERSE_ID
-			+ " = " + MagicContentProvider.Paths.DECK_CARD + "." + DeckCardTable.Columns.CARD_ID;
+			+ " = " + MagicContentProvider.Paths.DECK_CARD + "." + DeckCardTable.Columns.CARD_ID
+			+ " AND " + MagicContentProvider.Paths.SET_CARD + "." + SetCardTable.Columns.CARD_ID 
+			+ " = " + MagicContentProvider.Paths.CARD + "." + CardTable.Columns.MULTIVERSE_ID; 
 	
 	public MagicDatabase(final Context context) {
 		super(context, MagicApplication.DATABASE_NAME, null, MagicApplication.DATABASE_VERSION);
