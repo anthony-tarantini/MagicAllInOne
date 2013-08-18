@@ -12,5 +12,6 @@ public class DeckListView {
 		public static final String NUMBER = "number";
 		public static final String WATERMARK = "watermark";
 		public static final String QUANTITY = "quantity";
+		public static final String TYPE = "type";
 	}
 }

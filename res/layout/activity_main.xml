@@ -13,7 +13,7 @@
         android:layout_width="175dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/translucent_gray"
+        android:background="@color/eighty_percent_gray"
         android:choiceMode="singleChoice"
         android:divider="@color/translucent_white"
         android:dividerHeight="2dp" />

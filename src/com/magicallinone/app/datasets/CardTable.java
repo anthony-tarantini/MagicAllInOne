@@ -3,6 +3,7 @@ package com.magicallinone.app.datasets;
 import android.content.ContentValues;
 
 import com.magicallinone.app.models.Card;
+import com.magicallinone.app.utils.DBUtils;
 
 public class CardTable {
 	public static class Columns {
@@ -40,14 +41,9 @@ public class CardTable {
 		contentValues.put(Columns.NUMBER, card.number);
 		contentValues.put(Columns.MULTIVERSE_ID, card.multiverseid);
 		contentValues.put(Columns.WATERMARK, card.watermark);
-		contentValues.put(Columns.COLORS, getCardColours(card.colors));
+		contentValues.put(Columns.COLORS, DBUtils.getCardColours(card.colors));
+		contentValues.put(Columns.EXTRA_TYPES, DBUtils.getType(card.supertypes, card.types));
+		contentValues.put(Columns.TYPE, card.type);
 		return contentValues;
-	}
-
-	private static String getCardColours(String[] colours){
-		String cardColours = "";
-		for (String colour : colours)
-			cardColours += colour.charAt(0);
-		return cardColours.toLowerCase();
 	}
 }

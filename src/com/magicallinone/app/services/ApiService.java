@@ -23,6 +23,7 @@ import com.magicallinone.app.datasets.DeckCardTable;
 import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.datasets.SetCardTable;
 import com.magicallinone.app.datasets.SetTable;
+import com.magicallinone.app.datasets.CardTable.Columns;
 import com.magicallinone.app.models.Card;
 import com.magicallinone.app.models.Deck;
 import com.magicallinone.app.models.Set;
@@ -46,6 +47,7 @@ public class ApiService extends IntentService {
 		public static final String DECK_ID = "deck_id";
 		public static final String CARD_ID = "card_id";
 		public static final String QUANTITY = "quantity";
+		public static final String COLUMN = "column";
 	}
 
 	public static final class Operations {
@@ -53,6 +55,12 @@ public class ApiService extends IntentService {
 		public static final int SINGLE_SET = 2;
 		public static final int ADD_DECK = 3;
 		public static final int ADD_CARD = 4;
+		public static final int UPDATE_COUNT = 5;
+		public static final int REMOVE_CARD = 6;
+	}
+
+	public static final class Types {
+		public static final String BASIC_LAND = "Basic Land";
 	}
 
 	public static final String SETS = "sets/";
@@ -85,6 +93,11 @@ public class ApiService extends IntentService {
 		case Operations.ADD_CARD:
 			addCard(operations, intent);
 			break;
+		case Operations.UPDATE_COUNT:
+			updateCount(operations, intent);
+			break;
+		case Operations.REMOVE_CARD:
+			removeCard(operations, intent);
 		default:
 			break;
 		}
@@ -108,17 +121,21 @@ public class ApiService extends IntentService {
 			operations.add(operation);
 			for (Card card : set.cards) {
 				ContentValues cardValues = CardTable.getContentValues(card);
-				operation = ContentProviderOperation
-						.newInsert(MagicContentProvider.Uris.CARD_URI)
-						.withValues(cardValues).build();
-				operations.add(operation);
-				ContentValues setCard = new ContentValues();
-				setCard.put(SetCardTable.Columns.SET_CODE, set.code);
-				setCard.put(SetCardTable.Columns.CARD_ID, card.multiverseid);
-				operation = ContentProviderOperation
-						.newInsert(MagicContentProvider.Uris.SET_CARD_URI)
-						.withValues(setCard).build();
-				operations.add(operation);
+				if (!cardValues.get(Columns.EXTRA_TYPES).equals(
+						Types.BASIC_LAND)) {
+					operation = ContentProviderOperation
+							.newInsert(MagicContentProvider.Uris.CARD_URI)
+							.withValues(cardValues).build();
+					operations.add(operation);
+
+					ContentValues setCard = new ContentValues();
+					setCard.put(SetCardTable.Columns.SET_CODE, set.code);
+					setCard.put(SetCardTable.Columns.CARD_ID, card.multiverseid);
+					operation = ContentProviderOperation
+							.newInsert(MagicContentProvider.Uris.SET_CARD_URI)
+							.withValues(setCard).build();
+					operations.add(operation);
+				}
 			}
 		} catch (IOException exception) {
 			Log.e(ApiService.class.getCanonicalName(), exception.getMessage(),
@@ -148,24 +165,63 @@ public class ApiService extends IntentService {
 		}
 	}
 
-	private void addDeck(final ArrayList<ContentProviderOperation> operations, Intent intent){
+	private void addDeck(final ArrayList<ContentProviderOperation> operations,
+			Intent intent) {
 		ContentProviderOperation operation;
-		Deck deck = new Deck(intent.getStringExtra(Extras.TITLE), intent.getStringExtra(Extras.DESCRIPTION), 0, intent.getStringExtra(Extras.FORMAT));
+		Deck deck = new Deck(intent.getStringExtra(Extras.TITLE),
+				intent.getStringExtra(Extras.DESCRIPTION), 0,
+				intent.getStringExtra(Extras.FORMAT));
 		final ContentValues deckValues = DeckTable.getContentValues(deck);
-		operation = ContentProviderOperation.newInsert(MagicContentProvider.Uris.DECKS_URI).withValues(deckValues).build();
+		operation = ContentProviderOperation
+				.newInsert(MagicContentProvider.Uris.DECKS_URI)
+				.withValues(deckValues).build();
 		operations.add(operation);
 	}
-	
-	private void addCard(final ArrayList<ContentProviderOperation> operations, Intent intent){
+
+	private void addCard(final ArrayList<ContentProviderOperation> operations,
+			Intent intent) {
 		ContentProviderOperation operation;
 		ContentValues deckCardValues = new ContentValues();
-		deckCardValues.put(DeckCardTable.Columns.DECK_ID, intent.getIntExtra(Extras.DECK_ID, -1));
-		deckCardValues.put(DeckCardTable.Columns.CARD_ID, intent.getIntExtra(Extras.CARD_ID, -1));
-		deckCardValues.put(DeckCardTable.Columns.QUANTITY, intent.getIntExtra(Extras.QUANTITY, -1));
-		operation = ContentProviderOperation.newInsert(MagicContentProvider.Uris.DECK_CARD_URI).withValues(deckCardValues).build();
+		deckCardValues.put(DeckCardTable.Columns.DECK_ID,
+				intent.getIntExtra(Extras.DECK_ID, -1));
+		deckCardValues.put(DeckCardTable.Columns.CARD_ID,
+				intent.getIntExtra(Extras.CARD_ID, -1));
+		deckCardValues.put(DeckCardTable.Columns.QUANTITY,
+				intent.getIntExtra(Extras.QUANTITY, -1));
+		operation = ContentProviderOperation
+				.newInsert(MagicContentProvider.Uris.DECK_CARD_URI)
+				.withValues(deckCardValues).build();
 		operations.add(operation);
 	}
-	
+
+	private void updateCount(
+			final ArrayList<ContentProviderOperation> operations, Intent intent) {
+		ContentProviderOperation operation;
+		ContentValues countUpdateValues = new ContentValues();
+		countUpdateValues.put(DeckCardTable.Columns.QUANTITY,
+				intent.getIntExtra(Extras.QUANTITY, -1));
+		String selection = intent.getStringExtra(Extras.COLUMN) + " = ?";
+		String[] selectionArgs = new String[] { intent
+				.getStringExtra(Extras.QUERY), };
+		operation = ContentProviderOperation
+				.newUpdate(MagicContentProvider.Uris.DECK_CARD_URI)
+				.withValues(countUpdateValues)
+				.withSelection(selection, selectionArgs).build();
+		operations.add(operation);
+	}
+
+	private void removeCard(
+			final ArrayList<ContentProviderOperation> operations, Intent intent) {
+		ContentProviderOperation operation;
+		String selection = intent.getStringExtra(Extras.COLUMN) + " = ?";
+		String[] selectionArgs = new String[] { intent
+				.getStringExtra(Extras.QUERY), };
+		operation = ContentProviderOperation
+				.newDelete(MagicContentProvider.Uris.DECK_CARD_URI)
+				.withSelection(selection, selectionArgs).build();
+		operations.add(operation);
+	}
+
 	private void performOperations(
 			final ArrayList<ContentProviderOperation> operations) {
 		final ContentResolver resolver = getContentResolver();

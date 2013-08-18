@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/translucent_gray"
+    android:background="@color/eighty_percent_gray"
     android:orientation="vertical" >
-    
+
     <ImageView
         android:id="@+id/dialog_fragment_card_details_image"
         android:layout_width="wrap_content"

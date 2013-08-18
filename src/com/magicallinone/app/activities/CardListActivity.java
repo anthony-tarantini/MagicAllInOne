@@ -17,7 +17,6 @@ import android.widget.EditText;
 import com.magicallinone.app.R;
 import com.magicallinone.app.fragment.CardListFragment;
 import com.magicallinone.app.listeners.OnCardSelectedListener;
-import com.magicallinone.app.managers.FontManager;
 import com.magicallinone.app.services.ApiService;
 
 public class CardListActivity extends BaseFragmentActivity implements
@@ -86,10 +85,8 @@ public class CardListActivity extends BaseFragmentActivity implements
 		View view = inflater.inflate(R.layout.dialog_add_card, null);
 		final EditText countEditText = ((EditText) view
 				.findViewById(R.id.dialog_add_card_count));
-		countEditText.setTypeface(FontManager.INSTANCE.getAppFont());
 		Button cancelButton = (Button) view
 				.findViewById(R.id.dialog_add_card_cancel);
-		cancelButton.setTypeface(FontManager.INSTANCE.getAppFont());
 		cancelButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -101,7 +98,6 @@ public class CardListActivity extends BaseFragmentActivity implements
 		});
 		Button submitButton = (Button) view
 				.findViewById(R.id.dialog_add_card_submit);
-		submitButton.setTypeface(FontManager.INSTANCE.getAppFont());
 		submitButton.setOnClickListener(new OnClickListener() {
 
 			@Override

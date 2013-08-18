@@ -1,5 +1,7 @@
 package com.magicallinone.app.models;
 
+import java.util.List;
+
 public class Card {
 	public String layout;
 	public String name;
@@ -8,9 +10,9 @@ public class Card {
 	public int cmc;
 	public String[] colors;
 	public String type;
-	public String[] supertypes;
-	public String[] types;
-	public String[] subtypes;
+	public List<String> supertypes;
+	public List<String> types;
+	public List<String> subtypes;
 	public String rarity;
 	public String text;
 	public String flavor;

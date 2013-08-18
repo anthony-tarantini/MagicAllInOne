@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -31,22 +29,26 @@ import android.widget.TextView;
 import com.magicallinone.app.R;
 import com.magicallinone.app.activities.SetsListActivity;
 import com.magicallinone.app.datasets.CardsView;
+import com.magicallinone.app.datasets.DeckCardTable;
 import com.magicallinone.app.datasets.DeckListView;
-import com.magicallinone.app.dialogfragments.CardDetailDialogFragment;
-import com.magicallinone.app.managers.FontManager;
+import com.magicallinone.app.listeners.CardMenuListener;
+import com.magicallinone.app.models.CardTag;
 import com.magicallinone.app.providers.MagicContentProvider;
+import com.magicallinone.app.services.ApiService;
+import com.magicallinone.app.ui.DeckListContextMenu;
 import com.magicallinone.app.utils.ImageUtils;
 
 public class DeckCardListFragment extends BaseFragment implements ViewBinder,
-		LoaderCallbacks<Cursor>, OnItemClickListener {
+		LoaderCallbacks<Cursor>, OnItemClickListener, CardMenuListener {
 
 	private int mDeckId;
 	private Button mAddCardButton;
+	private View mCurrentMenuView;
 
 	public static final class Arguments {
 		public static final String DECK_ID = "deck_id";
 	}
-	
+
 	public static final class Keys {
 		public static final int SET_ID = 1;
 		public static final int CARD_NUMBER = 2;
@@ -64,6 +66,7 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	private TextView mEmptyView;
 	private CursorLoader mCursorLoader;
 	private SimpleCursorAdapter mAdapter;
+	private DeckListContextMenu mMenu;
 	private OnClickListener mOnAddClickListener = new OnClickListener() {
 
 		@Override
@@ -118,8 +121,9 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 
 		mAddCardButton = (Button) view
 				.findViewById(R.id.fragment_deck_card_list_add);
-		mAddCardButton.setTypeface(FontManager.INSTANCE.getAppFont());
 		mAddCardButton.setOnClickListener(mOnAddClickListener);
+
+		mMenu = new DeckListContextMenu(getActivity(), this);
 
 		return view;
 	}
@@ -170,7 +174,6 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 
 	private void showNoCardsScreen() {
 		mListView.setVisibility(View.GONE);
-		mEmptyView.setTypeface(FontManager.INSTANCE.getAppFont());
 		mEmptyView.setVisibility(View.VISIBLE);
 	}
 
@@ -186,11 +189,7 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 		switch (view.getId()) {
 		case R.id.list_item_deck_card_name:
 			textView = (TextView) view;
-			textView.setTypeface(FontManager.INSTANCE.getAppFont(),
-					Typeface.BOLD);
-			textView.setTextSize(18);
 			textView.setText(cursor.getString(columnIndex));
-			textView.setTag(cursor.getString(cursor.getColumnIndex(DeckListView.Columns.SET_ID)));
 			return true;
 		case R.id.list_item_deck_card_mana_cost_layout:
 			List<MatchResult> manaSymbols = new ArrayList<MatchResult>();
@@ -206,30 +205,87 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 			return true;
 		case R.id.list_item_deck_card_quantity:
 			textView = (TextView) view;
-			textView.setTypeface(FontManager.INSTANCE.getAppFont());
-			textView.setTextSize(20);
-			textView.setTag(cursor.getString(cursor.getColumnIndex(DeckListView.Columns.NUMBER)));
-			textView.setText(getActivity().getString(R.string.x) + cursor.getString(columnIndex));
+			textView.setTag(CardTag.createCardTag(cursor));
+			textView.setText(getActivity().getString(R.string.x)
+					+ cursor.getString(columnIndex));
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		String setId = (String) view.findViewById(R.id.list_item_deck_card_name).getTag();
-		int cardNumber = Integer.parseInt(((String) view.findViewById(R.id.list_item_deck_card_quantity).getTag()));
-		final CardDetailDialogFragment fragment = CardDetailDialogFragment.newInstance(setId, cardNumber);
-		fragment.setStyle(DialogFragment.STYLE_NO_FRAME | DialogFragment.STYLE_NO_TITLE, 0);
-		final FragmentManager fragmentManager = getChildFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.add(fragment, CardDetailDialogFragment.class.getCanonicalName());
-		fragmentTransaction.commit();
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		if (mCurrentMenuView != view) {
+			if (mCurrentMenuView != null)
+				removeMenuView(mCurrentMenuView);
+			((FrameLayout) view).addView(mMenu.getMenu((CardTag) view
+					.findViewById(R.id.list_item_deck_card_quantity).getTag()));
+			mCurrentMenuView = view;
+		} else {
+			removeMenuView(view);
+			mCurrentMenuView = null;
+		}
+	}
+
+	private void removeMenuView(View view) {
+		((FrameLayout) view).removeView(view
+				.findViewById(R.id.list_item_overlay_menu));
 	}
 
 	@Override
 	public void onDestroy() {
 		mOnAddClickListener = null;
 		super.onDestroy();
+	}
+
+	@Override
+	public void onRemoveSelected() {
+		CardTag cardTag = (CardTag) mCurrentMenuView.findViewById(
+				R.id.list_item_deck_card_quantity).getTag();
+		removeCard(cardTag.getId());
+	}
+
+	@Override
+	public void onMinusSelected() {
+		CardTag cardTag = (CardTag) mCurrentMenuView.findViewById(
+				R.id.list_item_deck_card_quantity).getTag();
+		int quantity = cardTag.getQuantity() - 1;
+		updateCardCount(cardTag.getId(), quantity);
+		mMenu.toggleVisibilities(quantity);
+	}
+
+	@Override
+	public void onPlusSelected() {
+		CardTag cardTag = (CardTag) mCurrentMenuView.findViewById(
+				R.id.list_item_deck_card_quantity).getTag();
+		int quantity = cardTag.getQuantity() + 1;
+		updateCardCount(cardTag.getId(), quantity);
+		mMenu.toggleVisibilities(quantity);
+	}
+
+	@Override
+	public void onInformationSelected() {
+//		CardTag cardTag = (CardTag) mCurrentMenuView.findViewById(
+//				R.id.list_item_deck_card_quantity).getTag();
+	}
+
+	private void updateCardCount(int cardId, int quantity) {
+		Intent intent = new Intent(getActivity(), ApiService.class);
+		intent.putExtra(ApiService.Extras.QUANTITY, quantity);
+		intent.putExtra(ApiService.Extras.OPERATION,
+				ApiService.Operations.UPDATE_COUNT);
+		intent.putExtra(ApiService.Extras.QUERY, String.valueOf(cardId));
+		intent.putExtra(ApiService.Extras.COLUMN, DeckCardTable.Columns.CARD_ID);
+		getActivity().startService(intent);
+	}
+
+	private void removeCard(int cardId) {
+		Intent intent = new Intent(getActivity(), ApiService.class);
+		intent.putExtra(ApiService.Extras.OPERATION,
+				ApiService.Operations.REMOVE_CARD);
+		intent.putExtra(ApiService.Extras.QUERY, String.valueOf(cardId));
+		intent.putExtra(ApiService.Extras.COLUMN, DeckCardTable.Columns.CARD_ID);
+		getActivity().startService(intent);
 	}
 }

@@ -11,6 +11,8 @@ public final class R {
     public static final class anim {
         public static final int anim_fade_in=0x7f040000;
         public static final int anim_fade_out=0x7f040001;
+        public static final int anim_from_middle=0x7f040002;
+        public static final int anim_to_middle=0x7f040003;
     }
     public static final class array {
         public static final int drawer_items=0x7f060000;
@@ -19,46 +21,53 @@ public final class R {
     }
     public static final class color {
         public static final int black=0x7f070001;
+        public static final int eighty_percent_gray=0x7f070003;
         public static final int gray=0x7f070002;
-        public static final int translucent_gray=0x7f070003;
-        public static final int translucent_white=0x7f070004;
+        public static final int ninety_percent_gray=0x7f070004;
+        public static final int translucent_white=0x7f070005;
         public static final int white=0x7f070000;
     }
     public static final class dimen {
         public static final int activity_horizontal_margin=0x7f080000;
         public static final int activity_vertical_margin=0x7f080001;
+        public static final int list_item_overlay_menu_margin=0x7f080002;
     }
     public static final class drawable {
-        public static final int blue_plus=0x7f020000;
-        public static final int btn_blue_disabled_focused_holo_light=0x7f020001;
-        public static final int btn_blue_disabled_holo_light=0x7f020002;
-        public static final int btn_blue_focused_holo_light=0x7f020003;
-        public static final int btn_blue_normal_holo_light=0x7f020004;
-        public static final int btn_blue_pressed_holo_light=0x7f020005;
-        public static final int btn_gray_disabled_focused_holo_light=0x7f020006;
-        public static final int btn_gray_disabled_holo_light=0x7f020007;
-        public static final int btn_gray_focused_holo_light=0x7f020008;
-        public static final int btn_gray_normal_holo_light=0x7f020009;
-        public static final int btn_gray_pressed_holo_light=0x7f02000a;
-        public static final int btn_holo_light_blue=0x7f02000b;
-        public static final int btn_holo_light_gray=0x7f02000c;
-        public static final int card_stack=0x7f02000d;
-        public static final int dice=0x7f02000e;
-        public static final int gray_minus=0x7f02000f;
-        public static final int ic_app_icon=0x7f020010;
-        public static final int ic_drawer=0x7f020011;
-        public static final int placeholder=0x7f020012;
-        public static final int plus=0x7f020013;
-        public static final int search=0x7f020014;
-        public static final int selector_minus_icon=0x7f020015;
-        public static final int selector_plus_icon=0x7f020016;
-        public static final int set=0x7f020017;
-        public static final int white_minus=0x7f020018;
-        public static final int white_plus=0x7f020019;
+        public static final int black_x=0x7f020000;
+        public static final int blue_information=0x7f020001;
+        public static final int blue_plus=0x7f020002;
+        public static final int btn_blue_disabled_focused_holo_light=0x7f020003;
+        public static final int btn_blue_disabled_holo_light=0x7f020004;
+        public static final int btn_blue_focused_holo_light=0x7f020005;
+        public static final int btn_blue_normal_holo_light=0x7f020006;
+        public static final int btn_blue_pressed_holo_light=0x7f020007;
+        public static final int btn_gray_disabled_focused_holo_light=0x7f020008;
+        public static final int btn_gray_disabled_holo_light=0x7f020009;
+        public static final int btn_gray_focused_holo_light=0x7f02000a;
+        public static final int btn_gray_normal_holo_light=0x7f02000b;
+        public static final int btn_gray_pressed_holo_light=0x7f02000c;
+        public static final int btn_holo_light_blue=0x7f02000d;
+        public static final int btn_holo_light_gray=0x7f02000e;
+        public static final int card_stack=0x7f02000f;
+        public static final int dice=0x7f020010;
+        public static final int gray_minus=0x7f020011;
+        public static final int ic_app_icon=0x7f020012;
+        public static final int ic_drawer=0x7f020013;
+        public static final int placeholder=0x7f020014;
+        public static final int search=0x7f020015;
+        public static final int selector_information_icon=0x7f020016;
+        public static final int selector_minus_icon=0x7f020017;
+        public static final int selector_plus_icon=0x7f020018;
+        public static final int selector_x_icon=0x7f020019;
+        public static final int set=0x7f02001a;
+        public static final int white_information=0x7f02001b;
+        public static final int white_minus=0x7f02001c;
+        public static final int white_plus=0x7f02001d;
+        public static final int white_x=0x7f02001e;
     }
     public static final class id {
-        public static final int action_add=0x7f0c0036;
-        public static final int action_placeholder=0x7f0c0035;
+        public static final int action_add=0x7f0c003b;
+        public static final int action_placeholder=0x7f0c003a;
         public static final int activity_deckbuilder_information=0x7f0c0001;
         public static final int activity_deckbuilder_list=0x7f0c0002;
         public static final int card_listing=0x7f0c0013;
@@ -108,8 +117,13 @@ public final class R {
         public static final int list_item_drawer_image=0x7f0c0030;
         public static final int list_item_drawer_text=0x7f0c0031;
         public static final int list_item_mana_symbol_image=0x7f0c0032;
-        public static final int list_item_set_logo=0x7f0c0034;
-        public static final int list_item_set_symbol=0x7f0c0033;
+        public static final int list_item_overlay_menu=0x7f0c0033;
+        public static final int list_item_overlay_menu_information=0x7f0c0037;
+        public static final int list_item_overlay_menu_minus=0x7f0c0035;
+        public static final int list_item_overlay_menu_plus=0x7f0c0036;
+        public static final int list_item_overlay_menu_remove=0x7f0c0034;
+        public static final int list_item_set_logo=0x7f0c0039;
+        public static final int list_item_set_symbol=0x7f0c0038;
         public static final int set_list=0x7f0c001e;
         public static final int splash_image=0x7f0c001f;
     }
@@ -133,7 +147,8 @@ public final class R {
         public static final int list_item_deck_card=0x7f030010;
         public static final int list_item_drawer=0x7f030011;
         public static final int list_item_mana_symbol=0x7f030012;
-        public static final int list_item_set=0x7f030013;
+        public static final int list_item_overlay_menu=0x7f030013;
+        public static final int list_item_set=0x7f030014;
     }
     public static final class menu {
         public static final int deck_list_fragment=0x7f0b0000;

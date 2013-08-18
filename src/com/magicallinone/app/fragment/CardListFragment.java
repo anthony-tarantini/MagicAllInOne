@@ -14,11 +14,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Typeface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -33,10 +36,11 @@ import com.magicallinone.app.R;
 import com.magicallinone.app.application.MagicApplication;
 import com.magicallinone.app.datasets.CardsView;
 import com.magicallinone.app.listeners.OnCardSelectedListener;
-import com.magicallinone.app.managers.FontManager;
 import com.magicallinone.app.providers.MagicContentProvider;
 import com.magicallinone.app.services.ApiService;
 import com.magicallinone.app.utils.ImageUtils;
+import com.xtremelabs.imageutils.ImageLoaderListener;
+import com.xtremelabs.imageutils.ImageReturnedFrom;
 
 public class CardListFragment extends BaseFragment implements ViewBinder,
 		OnItemClickListener, LoaderCallbacks<Cursor> {
@@ -94,11 +98,12 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 		mProgressDialog.setMessage("Stand By ...");
 		mProgressDialog.setCancelable(false);
 		mProgressDialog.show();
-		
+
 		mSetId = getArguments().getString(Extras.SET);
-		
+
 		mLoaderManager = getLoaderManager();
-		getImageLoader().setDefaultOptions(MagicApplication.getImageLoaderOptions());
+		getImageLoader().setDefaultOptions(
+				MagicApplication.getImageLoaderOptions());
 
 		createReceiver();
 		startApiService();
@@ -129,7 +134,8 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		int cardId = ((Integer) view.findViewById(R.id.list_item_card_image).getTag()).intValue();
+		int cardId = ((Integer) view.findViewById(R.id.list_item_card_image)
+				.getTag()).intValue();
 		mOnCardSelectedListener.onCardSelected(cardId);
 	}
 
@@ -142,34 +148,32 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 		case R.id.list_item_card_rules_text:
 			textView = (TextView) view;
 			String text = cursor.getString(columnIndex);
-			textView.setTypeface(FontManager.INSTANCE.getAppFont());
 			if (text != null) {
-				textView.setText(ImageUtils.replaceManaSymbols(getActivity(), text), BufferType.SPANNABLE);
+				textView.setText(
+						ImageUtils.replaceManaSymbols(getActivity(), text),
+						BufferType.SPANNABLE);
 			} else {
 				textView.setText(text);
 			}
 			return true;
 		case R.id.list_item_card_flavour_text:
 			textView = (TextView) view;
-			textView.setTypeface(FontManager.INSTANCE.getAppFont(),
-					Typeface.ITALIC);
 			textView.setText(cursor.getString(columnIndex));
 			return true;
 		case R.id.list_item_card_name:
 			textView = (TextView) view;
-			textView.setTypeface(FontManager.INSTANCE.getAppFont(),
-					Typeface.BOLD);
-			textView.setTextSize(18);
 			textView.setText(cursor.getString(columnIndex));
 			return true;
 		case R.id.list_item_card_mana_cost_layout:
 			List<MatchResult> manaSymbols = new ArrayList<MatchResult>();
-			ImageUtils.getManaSymbols(cursor.getString(columnIndex), manaSymbols);
+			ImageUtils.getManaSymbols(cursor.getString(columnIndex),
+					manaSymbols);
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			linearLayout = (LinearLayout) view;
 			linearLayout.removeAllViews();
 			if (manaSymbols != null) {
-				ImageUtils.addManaSymbols(getActivity(), inflater, linearLayout, manaSymbols);
+				ImageUtils.addManaSymbols(getActivity(), inflater,
+						linearLayout, manaSymbols);
 			}
 			return true;
 		case R.id.list_item_card_watermark:
@@ -182,9 +186,54 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 			return true;
 		case R.id.list_item_card_image:
 			imageView = (ImageView) view;
-			getImageLoader().loadImage(imageView,
-					ImageUtils.getImageUrl(cursor.getString(cursor.getColumnIndex(CardsView.Columns.SET_ID)), cursor.getInt(columnIndex)));
-			imageView.setTag(cursor.getInt(cursor.getColumnIndex(CardsView.Columns.CARD_ID)));
+			getImageLoader().loadImage(
+					imageView,
+					ImageUtils.getImageUrl(cursor.getString(cursor
+							.getColumnIndex(CardsView.Columns.SET_ID)), cursor
+							.getInt(columnIndex)), new ImageLoaderListener() {
+
+						@Override
+						public void onImageLoadError(String arg0) {
+						}
+
+						@Override
+						public void onImageAvailable(final ImageView imageView,
+								final Bitmap bitmap,
+								final ImageReturnedFrom imageReturnedFrom) {
+							imageView.clearAnimation();
+							if (imageReturnedFrom != ImageReturnedFrom.MEMORY) {
+								Animation myCardFlipAnimation = AnimationUtils
+										.loadAnimation(getActivity(),
+												R.anim.anim_to_middle);
+								myCardFlipAnimation
+										.setAnimationListener(new AnimationListener() {
+
+											@Override
+											public void onAnimationStart(
+													Animation animation) {}
+
+											@Override
+											public void onAnimationRepeat(
+													Animation animation) {}
+
+											@Override
+											public void onAnimationEnd(
+													Animation animation) {
+												imageView
+														.setImageBitmap(bitmap);
+												imageView
+														.startAnimation(AnimationUtils
+																.loadAnimation(
+																		getActivity(),
+																		R.anim.anim_from_middle));
+											}
+										});
+								imageView.startAnimation(myCardFlipAnimation);
+							}
+						}
+					});
+			imageView.setTag(cursor.getInt(cursor
+					.getColumnIndex(CardsView.Columns.CARD_ID)));
 			return true;
 		}
 		return false;
@@ -214,7 +263,7 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 			mAdapter.notifyDataSetChanged();
 		}
 	}
-	
+
 	private void createReceiver() {
 		mFilter = new IntentFilter(ApiService.Actions.SET_READ);
 		mFilter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -224,7 +273,8 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	private void startApiService() {
 		Intent intent = new Intent(getActivity(), ApiService.class);
 		intent.putExtra(ApiService.Extras.QUERY, mSetId);
-		intent.putExtra(ApiService.Extras.OPERATION, ApiService.Operations.SINGLE_SET);
+		intent.putExtra(ApiService.Extras.OPERATION,
+				ApiService.Operations.SINGLE_SET);
 		getActivity().startService(intent);
 	}
 
@@ -233,6 +283,7 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 		super.onPause();
 		getActivity().unregisterReceiver(mReceiver);
 		mReceiver = null;
+		mOnCardSelectedListener = null;
 	}
 
 	@Override
@@ -241,8 +292,8 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 		createReceiver();
 		getActivity().registerReceiver(mReceiver, mFilter);
 	}
-	
-	public void setOnCardSelectedListener(OnCardSelectedListener listener){
+
+	public void setOnCardSelectedListener(OnCardSelectedListener listener) {
 		mOnCardSelectedListener = listener;
 	}
 }

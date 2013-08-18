@@ -1,11 +1,10 @@
-package com.magicallinone.app.providers;
+package com.magicallinone.app.application;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.magicallinone.app.application.MagicApplication;
 import com.magicallinone.app.datasets.CardTable;
 import com.magicallinone.app.datasets.CardsView;
 import com.magicallinone.app.datasets.DeckCardTable;
@@ -13,6 +12,7 @@ import com.magicallinone.app.datasets.DeckListView;
 import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.datasets.SetCardTable;
 import com.magicallinone.app.datasets.SetTable;
+import com.magicallinone.app.providers.MagicContentProvider;
 
 public class MagicDatabase extends SQLiteOpenHelper {
 	public static final String DB_CREATE_SET = "CREATE TABLE "
@@ -49,6 +49,8 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			+ CardTable.Columns.CMC
 			+ " TEXT, "
 			+ CardTable.Columns.COLORS
+			+ " TEXT, "
+			+ CardTable.Columns.TYPE
 			+ " TEXT, "
 			+ CardTable.Columns.SUPERTYPES
 			+ " TEXT, "
@@ -160,11 +162,9 @@ public class MagicDatabase extends SQLiteOpenHelper {
 	
 	public static final String DB_CREATE_DECK_LIST_VIEW = "CREATE VIEW " 
 			+ MagicContentProvider.Paths.DECK_LIST + " AS "
-			+ "SELECT ("+ MagicContentProvider.Paths.DECK_CARD 
-			+ "." + DeckCardTable.Columns.DECK_CARD_ID
-			+ " + " + MagicContentProvider.Paths.CARD 
-			+ "." + CardTable.Columns.CARD_ID 
-			+ ") AS " + DeckListView.Columns.CARD_ID
+			+ "SELECT "+ MagicContentProvider.Paths.DECK_CARD 
+			+ "." + DeckCardTable.Columns.CARD_ID
+			+ " AS " + DeckListView.Columns.CARD_ID
 			+ ", " + MagicContentProvider.Paths.DECK_CARD 
 			+ "." + DeckCardTable.Columns.DECK_ID 
 			+ " AS " + DeckListView.Columns.DECK_ID 
@@ -180,6 +180,9 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			+ ", " + MagicContentProvider.Paths.CARD 
 			+ "." + CardTable.Columns.TEXT
 			+ " AS " + DeckListView.Columns.RULES_TEXT
+			+ ", " + MagicContentProvider.Paths.CARD
+			+ "." + CardTable.Columns.TYPE 
+			+ " AS " + DeckListView.Columns.TYPE
 			+ ", " + MagicContentProvider.Paths.CARD 
 			+ "." + CardTable.Columns.FLAVOUR
 			+ " AS " + DeckListView.Columns.FLAVOUR_TEXT

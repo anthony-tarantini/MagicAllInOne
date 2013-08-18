@@ -13,7 +13,7 @@
         android:layout_marginRight="5dp"
         tools:ignore="contentDescription" />
 
-    <TextView
+    <com.magicallinone.app.ui.BebasNeueTextView
         android:id="@+id/list_item_drawer_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

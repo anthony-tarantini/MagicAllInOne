@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_item_overlay_menu"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/ninety_percent_gray"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/list_item_overlay_menu_remove"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/list_item_overlay_menu_margin"
+        android:layout_marginRight="@dimen/list_item_overlay_menu_margin"
+        android:background="@drawable/selector_x_icon"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/list_item_overlay_menu_minus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/list_item_overlay_menu_margin"
+        android:layout_marginRight="@dimen/list_item_overlay_menu_margin"
+        android:background="@drawable/selector_minus_icon"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/list_item_overlay_menu_plus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/list_item_overlay_menu_margin"
+        android:layout_marginRight="@dimen/list_item_overlay_menu_margin"
+        android:background="@drawable/selector_plus_icon"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/list_item_overlay_menu_information"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/list_item_overlay_menu_margin"
+        android:layout_marginRight="@dimen/list_item_overlay_menu_margin"
+        android:background="@drawable/selector_information_icon"
+        android:scaleType="fitXY" />
+
+</LinearLayout>

@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.magicallinone.app.R;
 import com.magicallinone.app.activities.DeckbuilderActivity;
 import com.magicallinone.app.datasets.DeckTable;
-import com.magicallinone.app.managers.FontManager;
 import com.magicallinone.app.models.Deck;
 import com.magicallinone.app.providers.MagicContentProvider;
 import com.magicallinone.app.services.ApiService;
@@ -68,6 +67,11 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		mProgressDialog = new ProgressDialog(getActivity());
+		mProgressDialog.setTitle("Loading Decks");
+		mProgressDialog.setMessage("Stand By ...");
+		mProgressDialog.show();
+		
 		setHasOptionsMenu(true);
 	}
 
@@ -126,20 +130,17 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 		case R.id.list_item_deck_title:
 		case R.id.list_item_deck_description:
 			textView = (TextView) view;
-			textView.setTypeface(FontManager.INSTANCE.getAppFont());
 			textView.setText(cursor.getString(columnIndex));
 			view.setTag(cursor.getString(columnIndex));
 			return true;
 		case R.id.list_item_deck_format:
 			textView = (TextView) view;
-			textView.setTypeface(FontManager.INSTANCE.getAppFont());
 			textView.setText(getActivity().getString(R.string.format)
 					+ cursor.getString(columnIndex));
 			view.setTag(cursor.getString(columnIndex));
 			return true;
 		case R.id.list_item_deck_size:
 			textView = (TextView) view;
-			textView.setTypeface(FontManager.INSTANCE.getAppFont());
 			textView.setText(getActivity().getString(R.string.size)
 					+ cursor.getString(columnIndex));
 			view.setTag(cursor.getInt(columnIndex));
@@ -150,11 +151,6 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		mProgressDialog = new ProgressDialog(getActivity());
-		mProgressDialog.setTitle("Loading Decks");
-		mProgressDialog.setMessage("Stand By ...");
-		mProgressDialog.show();
-
 		mCursorLoader = new CursorLoader(getActivity(),
 				MagicContentProvider.Uris.DECKS_URI, null, null, null, null);
 		return mCursorLoader;
@@ -185,7 +181,6 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 
 	private void showNoDeckScreen() {
 		mListView.setVisibility(View.GONE);
-		mEmptyView.setTypeface(FontManager.INSTANCE.getAppFont());
 		mEmptyView.setVisibility(View.VISIBLE);
 	}
 
@@ -216,16 +211,12 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 		View view = inflater.inflate(R.layout.dialog_new_deck, null);
 		final EditText titleEditText = ((EditText) view
 				.findViewById(R.id.dialog_new_deck_title));
-		titleEditText.setTypeface(FontManager.INSTANCE.getAppFont());
 		final EditText descriptionEditText = ((EditText) view
 				.findViewById(R.id.dialog_new_deck_description));
-		descriptionEditText.setTypeface(FontManager.INSTANCE.getAppFont());
 		final EditText formatEditText = ((EditText) view
 				.findViewById(R.id.dialog_new_deck_format));
-		formatEditText.setTypeface(FontManager.INSTANCE.getAppFont());
 		Button cancelButton = (Button) view
 				.findViewById(R.id.dialog_new_deck_cancel);
-		cancelButton.setTypeface(FontManager.INSTANCE.getAppFont());
 		cancelButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -237,7 +228,6 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 		});
 		Button submitButton = (Button) view
 				.findViewById(R.id.dialog_new_deck_submit);
-		submitButton.setTypeface(FontManager.INSTANCE.getAppFont());
 		submitButton.setOnClickListener(new OnClickListener() {
 
 			@Override

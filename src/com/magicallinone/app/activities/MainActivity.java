@@ -27,7 +27,6 @@ import com.magicallinone.app.R;
 import com.magicallinone.app.fragment.DeckListFragment;
 import com.magicallinone.app.fragment.SetsListFragment;
 import com.magicallinone.app.listeners.DrawerItemClickListener;
-import com.magicallinone.app.managers.FontManager;
 
 public class MainActivity extends BaseFragmentActivity implements
 		DrawerItemClickListener, ViewBinder {
@@ -119,7 +118,6 @@ public class MainActivity extends BaseFragmentActivity implements
 		case R.id.list_item_drawer_text:
 			textView = (TextView) view;
 			textView.setText(textRepresentation);
-			textView.setTypeface(FontManager.INSTANCE.getAppFont());
 			return true;
 		case R.id.list_item_drawer_image:
 			imageView = (ImageView) view;
