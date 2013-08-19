@@ -22,4 +22,5 @@
 	<string name="this_deck_is_empty">THIS DECK IS EMPTY</string>
 	<string name="quantity">QUANTITY</string>
 	<string name="x">x</string>
+	<string name="add_land">ADD LAND</string>
 </resources>

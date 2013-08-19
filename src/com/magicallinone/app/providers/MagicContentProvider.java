@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class MagicContentProvider extends ContentProvider {
-
+	
 	private MagicDatabase mMagicDB;
 
 	public static final String AUTHORITY = "com.magicallinone.app.providers";

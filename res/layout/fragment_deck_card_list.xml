@@ -9,18 +9,18 @@
         android:layout_height="wrap_content"
         android:paddingBottom="50dp" />
 
-    <com.magicallinone.app.ui.BebasNeueTextView 
+    <com.magicallinone.app.ui.BebasNeueTextView
         android:id="@+id/fragment_deck_card_list_no_items"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
-        android:textSize="22sp"
         android:text="@string/this_deck_is_empty"
+        android:textSize="22sp"
         android:visibility="gone" />
-    
-    <RelativeLayout 
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -30,20 +30,40 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_alignParentTop="true"
-            android:background="@android:color/darker_gray"
-            android:layout_marginBottom="5dp" />
-        
-        <com.magicallinone.app.ui.BebasNeueButton
-            android:id="@+id/fragment_deck_card_list_add"
+            android:layout_marginBottom="5dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/btn_holo_light_blue"
-            android:gravity="center"
-            android:padding="10dp"
-            android:textColor="@color/white"
-            android:text="@string/add_cards"
-            android:textSize="18sp" />
+            android:orientation="horizontal" >
+
+            <com.magicallinone.app.ui.BebasNeueButton
+                android:id="@+id/fragment_deck_card_list_land"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_holo_light_gray"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/add_land"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <com.magicallinone.app.ui.BebasNeueButton
+                android:id="@+id/fragment_deck_card_list_add"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_holo_light_blue"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/add_cards"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
     </RelativeLayout>
-    
+
 </RelativeLayout>

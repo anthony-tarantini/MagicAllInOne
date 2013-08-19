@@ -4,9 +4,7 @@ package com.magicallinone.app.dialogfragments;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.magicallinone.app.R;
@@ -51,15 +49,6 @@ public class CardDetailDialogFragment extends BaseDialogFragment {
 		
 		final ImageView imageView = (ImageView) view.findViewById(R.id.dialog_fragment_card_details_image);
 		getImageLoader().loadImage(imageView, ImageUtils.getImageUrl(mSetId, mCardNumber));
-		
-		final ImageButton imageButton = (ImageButton) view.findViewById(R.id.dialog_fragment_card_details_minus);
-		imageButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-//				Do Nothing
-			}
-		});
 		
 		return view;
 	}
