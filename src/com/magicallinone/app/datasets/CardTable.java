@@ -1,13 +1,17 @@
 package com.magicallinone.app.datasets;
 
+import java.util.Map;
+
 import android.content.ContentValues;
 
 import com.magicallinone.app.models.Card;
+import com.magicallinone.app.providers.DatabaseTable;
 import com.magicallinone.app.utils.DBUtils;
 
-public class CardTable {
-	public static class Columns {
-		public static final String CARD_ID = "_id";
+public class CardTable extends DatabaseTable {
+	private static final String TABLE_NAME = "card_table";
+	
+	public static class Columns extends DatabaseTable.Columns{
 		public static final String LAYOUT = "layout";
 		public static final String NAME = "name";
 		public static final String SPLIT_NAMES = "split_names";
@@ -45,5 +49,31 @@ public class CardTable {
 		contentValues.put(Columns.EXTRA_TYPES, DBUtils.getType(card.supertypes, card.types));
 		contentValues.put(Columns.TYPE, card.type);
 		return contentValues;
+	}
+
+	@Override
+	public String getName() {
+		return TABLE_NAME;
+	}
+
+	@Override
+	protected Map<String, String> getColumnTypes() {
+		Map<String, String> columnTypes = super.getColumnTypes();
+		columnTypes.put(Columns.NAME, "TEXT");
+		columnTypes.put(Columns.MANA_COST, "TEXT");
+		columnTypes.put(Columns.TEXT, "TEXT");
+		columnTypes.put(Columns.FLAVOUR, "TEXT");
+		columnTypes.put(Columns.NUMBER, "TEXT");
+		columnTypes.put(Columns.MULTIVERSE_ID, "INTEGER");
+		columnTypes.put(Columns.WATERMARK, "TEXT");
+		columnTypes.put(Columns.COLORS, "TEXT");
+		columnTypes.put(Columns.EXTRA_TYPES, "TEXT");
+		columnTypes.put(Columns.TYPE, "TEXT");
+		return columnTypes;
+	}
+
+	@Override
+	protected String getConstraint() {
+		return "UNIQUE (" + Columns.MULTIVERSE_ID + ") ON CONFLICT REPLACE";
 	}
 }

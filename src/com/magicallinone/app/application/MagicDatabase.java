@@ -34,57 +34,6 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			+ SetTable.Columns.CODE
 			+ ") ON CONFLICT REPLACE)";
 
-	public static final String DB_CREATE_CARD = "CREATE TABLE "
-			+ MagicContentProvider.Paths.CARD + " ("
-			+ CardTable.Columns.CARD_ID
-			+ " INTEGER PRIMARY KEY, "
-			+ CardTable.Columns.LAYOUT
-			+ " TEXT, " 
-			+ CardTable.Columns.NAME
-			+ " TEXT, "
-			+ CardTable.Columns.SPLIT_NAMES
-			+ " TEXT, "
-			+ CardTable.Columns.MANA_COST
-			+ " TEXT, " 
-			+ CardTable.Columns.CMC
-			+ " TEXT, "
-			+ CardTable.Columns.COLORS
-			+ " TEXT, "
-			+ CardTable.Columns.TYPE
-			+ " TEXT, "
-			+ CardTable.Columns.SUPERTYPES
-			+ " TEXT, "
-			+ CardTable.Columns.EXTRA_TYPES
-			+ " TEXT, "
-			+ CardTable.Columns.SUBTYPES
-			+ " TEXT, "
-			+ CardTable.Columns.RARITY
-			+ " TEXT, " 
-			+ CardTable.Columns.TEXT
-			+ " TEXT, "
-			+ CardTable.Columns.FLAVOUR
-			+ " TEXT, "
-			+ CardTable.Columns.NUMBER
-			+ " INTEGER, " 
-			+ CardTable.Columns.POWER
-			+ " TEXT, "
-			+ CardTable.Columns.TOUGHNESS
-			+ " TEXT, "
-			+ CardTable.Columns.LOYALTY
-			+ " TEXT, "
-			+ CardTable.Columns.MULTIVERSE_ID
-			+ " INTEGER, "
-			+ CardTable.Columns.VARIATIONS
-			+ " TEXT, "
-			+ CardTable.Columns.IMAGE_NAME
-			+ " TEXT, "
-			+ CardTable.Columns.WATERMARK
-			+ " TEXT, "
-			+ CardTable.Columns.BORDER + " TEXT"
-			+ ", UNIQUE ("
-			+ CardTable.Columns.MULTIVERSE_ID
-			+ ") ON CONFLICT REPLACE)";
-
 	public static final String DB_CREATE_SET_CARD = "CREATE TABLE "
 			+ MagicContentProvider.Paths.SET_CARD + " ("
 			+ SetCardTable.Columns.SET_CARD_ID
@@ -113,21 +62,6 @@ public class MagicDatabase extends SQLiteOpenHelper {
 			+ DeckTable.Columns.DECK_ID
 			+ ") ON CONFLICT REPLACE)"; 
 	
-	public static final String DB_CREATE_DECK_CARD = "CREATE TABLE "
-			+ MagicContentProvider.Paths.DECK_CARD + " ("
-			+ DeckCardTable.Columns.DECK_CARD_ID
-			+ " INTEGER PRIMARY KEY, "
-			+ DeckCardTable.Columns.DECK_ID
-			+ " INTEGER NOT NULL, "
-			+ DeckCardTable.Columns.CARD_ID
-			+ " INTEGER NOT NULL, "
-			+ DeckCardTable.Columns.QUANTITY
-			+ " INTEGER NOT NULL,  UNIQUE ("
-			+ DeckCardTable.Columns.DECK_ID 
-			+ ", "
-			+ DeckCardTable.Columns.CARD_ID
-			+ ") ON CONFLICT REPLACE)";
-			
 	public static final String DB_CREATE_CARDS_VIEW = "CREATE VIEW " 
 			+ MagicContentProvider.Paths.CARDS + " AS "
 			+ "SELECT " + MagicContentProvider.Paths.CARD 
@@ -215,10 +149,12 @@ public class MagicDatabase extends SQLiteOpenHelper {
 	public void onCreate(final SQLiteDatabase db) {
 		db.execSQL(DB_CREATE_SET);
 		Log.d("DATABASE VIEW", DB_CREATE_DECK_LIST_VIEW);
-		db.execSQL(DB_CREATE_CARD);
+		CardTable cardTable = new CardTable();
+		cardTable.onCreate(db);
 		db.execSQL(DB_CREATE_DECKS);
 		db.execSQL(DB_CREATE_SET_CARD);
-		db.execSQL(DB_CREATE_DECK_CARD);
+		DeckCardTable deckCardTable = new DeckCardTable();
+		deckCardTable.onCreate(db);
 		db.execSQL(DB_CREATE_CARDS_VIEW);
 		db.execSQL(DB_CREATE_DECK_LIST_VIEW);
 	}

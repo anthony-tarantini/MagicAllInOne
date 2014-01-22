@@ -1,5 +1,6 @@
 package com.magicallinone.app.providers;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import android.content.ContentValues;
@@ -9,21 +10,25 @@ import android.net.Uri;
 import com.magicallinone.app.utils.DBUtils;
 
 public abstract class DatabaseTable extends DatabaseSet {
-	public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS";
-	public static final String DROP_TABLE = "DROP TABLE IF EXISTS";
-
-	protected Map<String, String> getColumnTypes() {
-		return null;
+	public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
+	public static final String DROP_TABLE = "DROP TABLE IF EXISTS ";
+	
+	public static class Columns {
+		public static final String _ID = "_id";  
+	}
+	
+	protected Map<String, String> getColumnTypes(){
+		Map<String, String> columnTypes = new LinkedHashMap<String, String>();
+		columnTypes.put(Columns._ID, "INTEGER PRIMARY KEY AUTOINCREMENT");
+		return columnTypes;
 	}
 
-	protected String getConstraint() {
-		return null;
-	}
-
+	protected abstract String getConstraint();
+	
 	@Override
 	public void onCreate(SQLiteDatabase database) {
 		final Map<String, String> columns = getColumnTypes();
-		final String query = CREATE_TABLE + " " + getName() + " ("
+		final String query = CREATE_TABLE + getName() + " ("
 				+ DBUtils.mapToString(columns) + getConstraintString() + ");";
 		database.execSQL(query);
 	}
