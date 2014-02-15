@@ -5,10 +5,10 @@ import java.util.Map;
 import com.magicallinone.app.providers.DatabaseTable;
 
 public class DeckCardTable extends DatabaseTable {
-	private static final String TABLE_NAME = "deck_card";
+	
+	public static final String TABLE_NAME = "deck_card";
 	
 	public class Columns extends DatabaseTable.Columns {
-		public static final String DECK_CARD_ID = "_id";
 		public static final String DECK_ID = "deck_id";
 		public static final String CARD_ID = "card_id";
 		public static final String QUANTITY = "quantity";

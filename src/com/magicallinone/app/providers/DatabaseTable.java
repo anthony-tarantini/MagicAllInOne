@@ -22,6 +22,13 @@ public abstract class DatabaseTable extends DatabaseSet {
 		columnTypes.put(Columns._ID, "INTEGER PRIMARY KEY AUTOINCREMENT");
 		return columnTypes;
 	}
+	
+	@Override
+	public void onUpgrade(SQLiteDatabase db) {
+		final String query = DROP_TABLE + getName();
+		db.execSQL(query);
+		onCreate(db);
+	}
 
 	protected abstract String getConstraint();
 	

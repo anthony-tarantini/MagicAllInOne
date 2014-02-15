@@ -9,7 +9,8 @@ import com.magicallinone.app.providers.DatabaseTable;
 import com.magicallinone.app.utils.DBUtils;
 
 public class CardTable extends DatabaseTable {
-	private static final String TABLE_NAME = "card_table";
+	
+	public static final String TABLE_NAME = "card_table";
 	
 	public static class Columns extends DatabaseTable.Columns{
 		public static final String LAYOUT = "layout";
