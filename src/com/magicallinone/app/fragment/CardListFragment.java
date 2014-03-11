@@ -230,7 +230,9 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 											}
 										});
 								imageView.startAnimation(myCardFlipAnimation);
-							}
+							} else {
+                                imageView.setImageBitmap(bitmap);
+                            }
 						}
 					});
 			imageView.setTag(cursor.getInt(cursor

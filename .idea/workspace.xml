@@ -14,6 +14,11 @@
   <component name="ChangeListManager">
     <list default="true" id="70ac56cb-a592-447e-b162-faf67fa3992d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/magicallinone/app/fragment/CardListFragment.java" afterPath="$PROJECT_DIR$/src/com/magicallinone/app/fragment/CardListFragment.java" />
+<<<<<<< Updated upstream
+=======
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/magicallinone/app/utils/DBUtils.java" afterPath="$PROJECT_DIR$/src/com/magicallinone/app/utils/DBUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.properties" afterPath="$PROJECT_DIR$/project.properties" />
+>>>>>>> Stashed changes
     </list>
     <ignored path="MagicAllInOne.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -81,7 +86,11 @@
         <entry file="file://$PROJECT_DIR$/src/com/magicallinone/app/utils/DBUtils.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
+<<<<<<< Updated upstream
               <caret line="28" column="39" selection-start="807" selection-end="807" />
+=======
+              <caret line="28" column="39" selection-start="850" selection-end="850" />
+>>>>>>> Stashed changes
               <folding />
             </state>
           </provider>
@@ -90,8 +99,13 @@
       <file leaf-file-name="CardListFragment.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/magicallinone/app/fragment/CardListFragment.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
             <state vertical-scroll-proportion="0.2214533" vertical-offset="2032" max-vertical-offset="3960">
               <caret line="186" column="47" selection-start="6142" selection-end="6142" />
+=======
+            <state vertical-scroll-proportion="-0.012110727" vertical-offset="2617" max-vertical-offset="3975">
+              <caret line="216" column="59" selection-start="7109" selection-end="7109" />
+>>>>>>> Stashed changes
               <folding />
             </state>
           </provider>
@@ -992,6 +1006,16 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< Updated upstream
+=======
+    <entry file="file://$PROJECT_DIR$/MagicAllInOne.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.1494024" vertical-offset="0" max-vertical-offset="502">
+          <caret line="5" column="28" selection-start="247" selection-end="247" />
+        </state>
+      </provider>
+    </entry>
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/src/com/magicallinone/app/providers/DatabaseView.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="975">
@@ -999,6 +1023,25 @@
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
+=======
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32608697" vertical-offset="0" max-vertical-offset="736">
+          <caret line="16" column="29" selection-start="306" selection-end="306" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.12228261" vertical-offset="0" max-vertical-offset="736">
+          <caret line="6" column="0" selection-start="230" selection-end="230" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/local.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="713">
@@ -1018,15 +1061,24 @@
     <entry file="file://$PROJECT_DIR$/src/com/magicallinone/app/utils/DBUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
+<<<<<<< Updated upstream
           <caret line="28" column="39" selection-start="807" selection-end="807" />
+=======
+          <caret line="28" column="39" selection-start="850" selection-end="850" />
+>>>>>>> Stashed changes
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/magicallinone/app/fragment/CardListFragment.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state vertical-scroll-proportion="0.2214533" vertical-offset="2032" max-vertical-offset="3960">
           <caret line="186" column="47" selection-start="6142" selection-end="6142" />
+=======
+        <state vertical-scroll-proportion="-0.012110727" vertical-offset="2617" max-vertical-offset="3975">
+          <caret line="216" column="59" selection-start="7109" selection-end="7109" />
+>>>>>>> Stashed changes
           <folding />
         </state>
       </provider>

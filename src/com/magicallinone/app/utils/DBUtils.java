@@ -19,10 +19,10 @@ public class DBUtils {
 
 	public static String getType(List<String> superTypes, List<String> typesList) {
 		String types = "";
-		if (typesList.contains(Types.ARTIFACT)) {
+		if (typesList != null && typesList.contains(Types.ARTIFACT)) {
 			types += Types.ARTIFACT + " ";
 			typesList.remove(Types.ARTIFACT);
-		} else if (superTypes.contains(Types.BASIC)){
+		} else if (superTypes != null && superTypes.contains(Types.BASIC)){
 			types += Types.BASIC + " ";
 			typesList.remove(Types.BASIC);
 		}
