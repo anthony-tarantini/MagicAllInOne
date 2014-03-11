@@ -1,9 +1,5 @@
 package com.magicallinone.app.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.MatchResult;
-
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -41,6 +37,10 @@ import com.magicallinone.app.services.ApiService;
 import com.magicallinone.app.utils.ImageUtils;
 import com.xtremelabs.imageutils.ImageLoaderListener;
 import com.xtremelabs.imageutils.ImageReturnedFrom;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.MatchResult;
 
 public class CardListFragment extends BaseFragment implements ViewBinder,
 		OnItemClickListener, LoaderCallbacks<Cursor> {
@@ -184,6 +184,7 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 			else
 				imageView.setVisibility(View.GONE);
 			return true;
+        //literally doing this in order to test
 		case R.id.list_item_card_image:
 			imageView = (ImageView) view;
 			getImageLoader().loadImage(
