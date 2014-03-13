@@ -19,16 +19,14 @@ public class SplashActivity extends BaseFragmentActivity {
 	private SplashReceiver mReceiver;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
 
 		final FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager
-				.beginTransaction();
-		fragmentTransaction.add(R.id.content_frame,
-				SplashFragment.newInstance(),
-				SplashFragment.class.getCanonicalName());
+		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        final SplashFragment splashFragment = SplashFragment.newInstance();
+        fragmentTransaction.add(R.id.content_frame, splashFragment, SplashFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
 		createReceiver();
@@ -44,8 +42,8 @@ public class SplashActivity extends BaseFragmentActivity {
 	public class SplashReceiver extends BroadcastReceiver {
 
 		@Override
-		public void onReceive(Context context, Intent intent) {
-			Handler handler = new Handler();
+		public void onReceive(final Context context, final Intent intent) {
+			final Handler handler = new Handler();
 			handler.postDelayed(new Runnable() {
 				public void run() {
 					MainActivity.newInstance(SplashActivity.this);
@@ -57,10 +55,9 @@ public class SplashActivity extends BaseFragmentActivity {
 	}
 
 	private void startApiService() {
-		Intent intent = new Intent(this, ApiService.class);
+		final Intent intent = new Intent(this, ApiService.class);
 		intent.putExtra(ApiService.Extras.QUERY, "SETS");
-		intent.putExtra(ApiService.Extras.OPERATION,
-				ApiService.Operations.SET_LIST);
+		intent.putExtra(ApiService.Extras.OPERATION, ApiService.Operations.SET_LIST);
 		startService(intent);
 	}
 

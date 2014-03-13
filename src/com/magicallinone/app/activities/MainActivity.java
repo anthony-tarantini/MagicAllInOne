@@ -1,9 +1,5 @@
 package com.magicallinone.app.activities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -27,18 +23,21 @@ import com.magicallinone.app.R;
 import com.magicallinone.app.fragment.DeckListFragment;
 import com.magicallinone.app.fragment.SetsListFragment;
 import com.magicallinone.app.listeners.DrawerItemClickListener;
+import com.xtremelabs.imageutils.ImageLoader;
 
-public class MainActivity extends BaseFragmentActivity implements
-		DrawerItemClickListener, ViewBinder {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class MainActivity extends BaseFragmentActivity implements DrawerItemClickListener, ViewBinder {
 	private ListView mDrawerList;
 	private DrawerLayout mDrawerLayout;
 	private SimpleAdapter mAdapter;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private int mCurrentFragment;
 
-	public static String[] KEYS = { Keys.TITLE, Keys.IMAGE, };
-	public static int[] VIEWS = { R.id.list_item_drawer_text,
-			R.id.list_item_drawer_image, };
+	public static final String[] KEYS = { Keys.TITLE, Keys.IMAGE, };
+	public static final int[] VIEWS = { R.id.list_item_drawer_text, R.id.list_item_drawer_image, };
 
 	public static final class Keys {
 		public static final String ROW_ID = "rowid";
@@ -53,23 +52,23 @@ public class MainActivity extends BaseFragmentActivity implements
 		public static final int DECKBUILDER = 3;
 	}
 
-	public static void newInstance(Context context) {
-		Intent intent = new Intent(context, MainActivity.class);
+	public static void newInstance(final Context context) {
+		final Intent intent = new Intent(context, MainActivity.class);
 		context.startActivity(intent);
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		String[] strings = getResources().getStringArray(R.array.drawer_items);
-		String[] images = {String.valueOf(R.drawable.set), String.valueOf(R.drawable.dice), String.valueOf(R.drawable.search), String.valueOf(R.drawable.card_stack)};
+		final String[] strings = getResources().getStringArray(R.array.drawer_items);
+		final String[] images = {String.valueOf(R.drawable.set), String.valueOf(R.drawable.dice), String.valueOf(R.drawable.search), String.valueOf(R.drawable.card_stack)};
 
-		List<HashMap<String, String>> drawerItems = new ArrayList<HashMap<String, String>>();
+		final List<HashMap<String, String>> drawerItems = new ArrayList<HashMap<String, String>>();
 		int count = 0;
 		for (int i = 0; i < 4; i++) {
-			HashMap<String, String> map = new HashMap<String, String>();
+			final HashMap<String, String> map = new HashMap<String, String>();
 			map.put(Keys.ROW_ID, "" + count++);
 			map.put(Keys.TITLE, strings[i]);
 			map.put(Keys.IMAGE, images[i]);
@@ -79,41 +78,37 @@ public class MainActivity extends BaseFragmentActivity implements
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 		mDrawerList.setOnItemClickListener(this);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-				R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
+		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
 			public void onDrawerClosed(View view) {
 			}
 
 			public void onDrawerOpened(View drawerView) {
 			}
 		};
+
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-		mAdapter = new SimpleAdapter(this, drawerItems,
-				R.layout.list_item_drawer, KEYS, VIEWS);
+		mAdapter = new SimpleAdapter(this, drawerItems, R.layout.list_item_drawer, KEYS, VIEWS);
 		mAdapter.setViewBinder(this);
 		mDrawerList.setAdapter(mAdapter);
 
-		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager
-				.beginTransaction();
-		fragmentTransaction.add(R.id.content_frame,
-				SetsListFragment.newInstance(),
-				SetsListFragment.class.getCanonicalName());
+		final FragmentManager fragmentManager = getFragmentManager();
+		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        final SetsListFragment setsListFragment = SetsListFragment.newInstance();
+        fragmentTransaction.add(R.id.content_frame, setsListFragment, SetsListFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
 		mCurrentFragment = DrawerItems.SETS;
 
-		ActionBar supportActionBar = getActionBar();
+		final ActionBar supportActionBar = getActionBar();
 		supportActionBar.setDisplayHomeAsUpEnabled(true);
 		supportActionBar.setHomeButtonEnabled(true);
 	}
 
 	@Override
-	public boolean setViewValue(View view, Object data,
-			String textRepresentation) {
-		TextView textView;
-		ImageView imageView;
+	public boolean setViewValue(final View view, final Object data, final String textRepresentation) {
+		final TextView textView;
+		final ImageView imageView;
 		switch (view.getId()) {
 		case R.id.list_item_drawer_text:
 			textView = (TextView) view;
@@ -121,37 +116,38 @@ public class MainActivity extends BaseFragmentActivity implements
 			return true;
 		case R.id.list_item_drawer_image:
 			imageView = (ImageView) view;
-			int resource = Integer.parseInt(textRepresentation);
-			getImageLoader().loadImageFromResource(imageView, resource);
+			final int resource = Integer.parseInt(textRepresentation);
+            final ImageLoader imageLoader = getImageLoader();
+            imageLoader.loadImageFromResource(imageView, resource);
 			return true;
 		}
 		return false;
 	}
 
-	public void goToFragment(Fragment fragment, String tag) {
-		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager
-				.beginTransaction();
+	public void goToFragment(final Fragment fragment, final String tag) {
+		final FragmentManager fragmentManager = getFragmentManager();
+		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.replace(R.id.content_frame, fragment, tag);
 		fragmentTransaction.commit();
 		closeDrawer();
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
+	public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
 		switch (position) {
 		case DrawerItems.SETS:
-			if (mCurrentFragment != DrawerItems.SETS)
-				goToFragment(SetsListFragment.newInstance(),
-						SetsListFragment.class.getCanonicalName());
+			if (mCurrentFragment != DrawerItems.SETS) {
+                final SetsListFragment setsListFragment = SetsListFragment.newInstance();
+                goToFragment(setsListFragment, SetsListFragment.class.getCanonicalName());
+            }
 			break;
 		case DrawerItems.SEARCH:
 			break;
 		case DrawerItems.DECKBUILDER:
-			if (mCurrentFragment != DrawerItems.DECKBUILDER)
-				goToFragment(DeckListFragment.newInstance(),
-						DeckListFragment.class.getCanonicalName());
+			if (mCurrentFragment != DrawerItems.DECKBUILDER) {
+                final DeckListFragment deckListFragment = DeckListFragment.newInstance();
+                goToFragment(deckListFragment, DeckListFragment.class.getCanonicalName());
+            }
 			break;
 		case DrawerItems.LIFE_COUNTER:
 			break;
@@ -160,19 +156,19 @@ public class MainActivity extends BaseFragmentActivity implements
 	}
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
+	protected void onPostCreate(final Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(final Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			toggleDrawer();

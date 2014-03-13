@@ -16,8 +16,8 @@ public class SetsListActivity extends BaseFragmentActivity {
 		public static final String DECK_ID = "deck_id";
 	}
 
-	public static void newInstance(Context context, int deckId) {
-		Intent intent = new Intent(context, SetsListActivity.class);
+	public static void newInstance(final Context context, final int deckId) {
+		final Intent intent = new Intent(context, SetsListActivity.class);
 		intent.putExtra(Extras.DECK_ID, deckId);
 		context.startActivity(intent);
 	}
@@ -25,34 +25,30 @@ public class SetsListActivity extends BaseFragmentActivity {
 	private int mDeckId;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sets_list);
 
-		Intent intent = getIntent();
+		final Intent intent = getIntent();
 		if (intent != null) {
 			mDeckId = intent.getIntExtra(Extras.DECK_ID, -1);
 		}
 
 		final FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager
-				.beginTransaction();
-		fragmentTransaction.add(R.id.content_frame,
-				SetsListFragment.newInstance(mDeckId),
-				SetsListFragment.class.getCanonicalName());
+		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        final SetsListFragment setsListFragment = SetsListFragment.newInstance(mDeckId);
+        fragmentTransaction.add(R.id.content_frame, setsListFragment, SetsListFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
-		ActionBar supportActionBar = getActionBar();
+		final ActionBar supportActionBar = getActionBar();
 		supportActionBar.setDisplayHomeAsUpEnabled(true);
 		supportActionBar.setHomeButtonEnabled(true);
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode,
-			Intent intent) {
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		if (requestCode == RequestCodes.ADD_CARD_SET_REQUEST
-				&& resultCode == RESULT_OK)
+		if (requestCode == RequestCodes.ADD_CARD_SET_REQUEST && resultCode == RESULT_OK)
 			finish();
 	}
 }

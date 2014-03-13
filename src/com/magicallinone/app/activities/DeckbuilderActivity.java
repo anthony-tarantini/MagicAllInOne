@@ -20,31 +20,29 @@ public class DeckbuilderActivity extends BaseFragmentActivity {
 
 	private Deck mDeck;
 
-	public static void newInstance(Context context, Deck deck) {
-		Intent intent = new Intent(context, DeckbuilderActivity.class);
+	public static void newInstance(final Context context, final Deck deck) {
+		final Intent intent = new Intent(context, DeckbuilderActivity.class);
 		intent.putExtra(Extras.DECK, deck);
 		context.startActivity(intent);
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deckbuilder);
 
 		mDeck = getIntent().getParcelableExtra(Extras.DECK);
 
 		final FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager
-				.beginTransaction();
-		fragmentTransaction.add(R.id.activity_deckbuilder_information,
-				DeckInformationFragment.newInstance(mDeck),
-				DeckInformationFragment.class.getCanonicalName());
-		fragmentTransaction.add(R.id.activity_deckbuilder_list,
-				DeckCardListFragment.newInstance(mDeck.deck_id),
-				DeckCardListFragment.class.getCanonicalName());
+		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        final DeckInformationFragment deckInformationFragment = DeckInformationFragment.newInstance(mDeck);
+        final DeckCardListFragment deckCardListFragment = DeckCardListFragment.newInstance(mDeck.deck_id);
+
+		fragmentTransaction.add(R.id.activity_deckbuilder_information, deckInformationFragment, DeckInformationFragment.class.getCanonicalName());
+        fragmentTransaction.add(R.id.activity_deckbuilder_list, deckCardListFragment, DeckCardListFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
-		ActionBar supportActionBar = getActionBar();
+		final ActionBar supportActionBar = getActionBar();
 		supportActionBar.setDisplayHomeAsUpEnabled(true);
 		supportActionBar.setHomeButtonEnabled(true);
 	}

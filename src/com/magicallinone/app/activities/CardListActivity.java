@@ -39,18 +39,16 @@ public class CardListActivity extends BaseFragmentActivity implements
 		context.startActivity(intent);
 	}
 
-	public static void newInstanceForResult(final Activity activity,
-			final String set, final int deckId, final int requestCode) {
+	public static void newInstanceForResult(final Activity activity, final String set, final int deckId, final int requestCode) {
 		final Intent intent = new Intent(activity, CardListActivity.class);
 		intent.putExtra(Extras.SET, set);
 		intent.putExtra(Extras.DECK_ID, deckId);
 		intent.putExtra(Extras.REQUEST_CODE, requestCode);
-		activity.startActivityForResult(intent,
-				RequestCodes.ADD_CARD_SET_REQUEST);
+		activity.startActivityForResult(intent, RequestCodes.ADD_CARD_SET_REQUEST);
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_card_list);
 
@@ -58,35 +56,32 @@ public class CardListActivity extends BaseFragmentActivity implements
 		mDeckId = getIntent().getIntExtra(Extras.DECK_ID, -1);
 		mRequestCode = getIntent().getIntExtra(Extras.REQUEST_CODE, -1);
 
-		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager
-				.beginTransaction();
-		CardListFragment fragment = CardListFragment.newInstance(mSetId);
-		fragment.setOnCardSelectedListener(this);
-		fragmentTransaction.add(R.id.content_frame, fragment,
-				CardListFragment.class.getCanonicalName());
+		final FragmentManager fragmentManager = getFragmentManager();
+		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		final CardListFragment cardListFragment = CardListFragment.newInstance(mSetId);
+		cardListFragment.setOnCardSelectedListener(this);
+		fragmentTransaction.add(R.id.content_frame, cardListFragment, CardListFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
-		ActionBar supportActionBar = getActionBar();
+		final ActionBar supportActionBar = getActionBar();
 		supportActionBar.setDisplayHomeAsUpEnabled(true);
 		supportActionBar.setHomeButtonEnabled(true);
 	}
 
 	@Override
-	public void onCardSelected(int cardId) {
-		if (mRequestCode == RequestCodes.ADD_CARD_SET_REQUEST)
-			showNewDeckDialog(cardId);
+	public void onCardSelected(final int cardId) {
+		if (mRequestCode == RequestCodes.ADD_CARD_SET_REQUEST) {
+            showNewDeckDialog(cardId);
+        }
 	}
 
 	private void showNewDeckDialog(final int cardId) {
-		LayoutInflater inflater = this.getLayoutInflater();
+		final LayoutInflater inflater = this.getLayoutInflater();
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		View view = inflater.inflate(R.layout.dialog_add_card, null);
-		final EditText countEditText = ((EditText) view
-				.findViewById(R.id.dialog_add_card_count));
-		Button cancelButton = (Button) view
-				.findViewById(R.id.dialog_add_card_cancel);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final View view = inflater.inflate(R.layout.dialog_add_card, null);
+		final EditText countEditText = ((EditText) view.findViewById(R.id.dialog_add_card_count));
+		final Button cancelButton = (Button) view.findViewById(R.id.dialog_add_card_cancel);
 		cancelButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -96,15 +91,13 @@ public class CardListActivity extends BaseFragmentActivity implements
 				}
 			}
 		});
-		Button submitButton = (Button) view
-				.findViewById(R.id.dialog_add_card_submit);
+		final Button submitButton = (Button) view.findViewById(R.id.dialog_add_card_submit);
 		submitButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				mAlertDialog.dismiss();
-				addNewCard(cardId,
-						Integer.parseInt(countEditText.getText().toString()));
+				addNewCard(cardId, Integer.parseInt(countEditText.getText().toString()));
 				finish();
 			}
 		});
@@ -113,10 +106,9 @@ public class CardListActivity extends BaseFragmentActivity implements
 		mAlertDialog.show();
 	}
 
-	private void addNewCard(int cardId, int quantity) {
-		Intent intent = new Intent(this, ApiService.class);
-		intent.putExtra(ApiService.Extras.OPERATION,
-				ApiService.Operations.ADD_CARD);
+	private void addNewCard(final int cardId, final int quantity) {
+		final Intent intent = new Intent(this, ApiService.class);
+		intent.putExtra(ApiService.Extras.OPERATION, ApiService.Operations.ADD_CARD);
 		intent.putExtra(ApiService.Extras.DECK_ID, mDeckId);
 		intent.putExtra(ApiService.Extras.CARD_ID, cardId);
 		intent.putExtra(ApiService.Extras.QUANTITY, quantity);
@@ -125,7 +117,7 @@ public class CardListActivity extends BaseFragmentActivity implements
 
 	@Override
 	public void finish() {
-		Intent intent = new Intent();
+		final Intent intent = new Intent();
 		setResult(RESULT_OK, intent);
 		super.finish();
 	}
