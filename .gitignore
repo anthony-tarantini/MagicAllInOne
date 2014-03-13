@@ -190,8 +190,6 @@ $RECYCLE.BIN/
 *.apk
 *.ap_
 
-.gradle
-
 # files for the dex VM
 *.dex
 
@@ -221,6 +219,13 @@ local.properties
 *.ipr
 *~
 *.swp
+
+# gradle directory
+.gradle
+gradlew
+gradlew.bat
+gradle/
+build/
 
 
 #############
