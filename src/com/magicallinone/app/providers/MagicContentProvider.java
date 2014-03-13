@@ -1,9 +1,5 @@
 package com.magicallinone.app.providers;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -11,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.magicallinone.app.application.MagicDatabase;
@@ -22,6 +17,10 @@ import com.magicallinone.app.datasets.DeckListView;
 import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.datasets.SetCardTable;
 import com.magicallinone.app.datasets.SetTable;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class MagicContentProvider extends ContentProvider {
 	
@@ -37,7 +36,6 @@ public class MagicContentProvider extends ContentProvider {
 	
 	protected SQLiteDatabase getDatabase() {
 		if (sDatabase == null) {
-			Log.d("TEST", "getDatabase");
 			createDatabase();
 		}
 		return sDatabase;
@@ -67,18 +65,12 @@ public class MagicContentProvider extends ContentProvider {
 	
 	public static final class Uris {
 		public static final Uri SET_URI = Uri.parse(BASE_URI + "/" + Paths.SET_TABLE);
-		public static final Uri CARD_URI = Uri.parse(BASE_URI + "/"
-				+ Paths.CARD_TABLE);
-		public static final Uri SET_CARD_URI = Uri.parse(BASE_URI + "/"
-				+ Paths.SET_CARD_TABLE);
-		public static final Uri CARDS_URI = Uri.parse(BASE_URI + "/"
-				+ Paths.CARDS_VIEW);
-		public static final Uri DECKS_URI = Uri.parse(BASE_URI + "/"
-				+ Paths.DECK_TABLE);
-		public static final Uri DECK_CARD_URI = Uri.parse(BASE_URI + "/"
-				+ Paths.DECK_CARD_TABLE);
-		public static final Uri DECK_LIST_URI = Uri.parse(BASE_URI + "/"
-				+ Paths.DECKS_VIEW);
+		public static final Uri CARD_URI = Uri.parse(BASE_URI + "/" + Paths.CARD_TABLE);
+		public static final Uri SET_CARD_URI = Uri.parse(BASE_URI + "/" + Paths.SET_CARD_TABLE);
+		public static final Uri CARDS_URI = Uri.parse(BASE_URI + "/" + Paths.CARDS_VIEW);
+		public static final Uri DECKS_URI = Uri.parse(BASE_URI + "/" + Paths.DECK_TABLE);
+		public static final Uri DECK_CARD_URI = Uri.parse(BASE_URI + "/" + Paths.DECK_CARD_TABLE);
+		public static final Uri DECK_LIST_URI = Uri.parse(BASE_URI + "/" + Paths.DECKS_VIEW);
 	}
 
 	private static final class Tables {
@@ -123,7 +115,6 @@ public class MagicContentProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
-		createDatabase();
 		mUriMatcher.addURI(AUTHORITY, Paths.SET_TABLE, Codes.SET);
 		mMappings.append(Codes.SET, new SetTable());
 		mUriMatcher.addURI(AUTHORITY, Paths.SET_TABLE + "/*", Codes.SET_STAR);
@@ -152,6 +143,7 @@ public class MagicContentProvider extends ContentProvider {
 		mMappings.append(Codes.DECKS, new DeckListView());
 		mUriMatcher.addURI(AUTHORITY, Paths.DECKS_VIEW + "/*", Codes.DECK_LIST_STAR);
 		mMappings.append(Codes.DECKS_STAR, new DeckListView());
+        createDatabase();
 		return true;
 	}
 
