@@ -190,6 +190,8 @@ $RECYCLE.BIN/
 *.apk
 *.ap_
 
+.gradle/
+
 # files for the dex VM
 *.dex
 
