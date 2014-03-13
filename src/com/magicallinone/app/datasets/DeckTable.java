@@ -1,12 +1,17 @@
 package com.magicallinone.app.datasets;
 
+import java.util.Map;
+
 import android.content.ContentValues;
 
 import com.magicallinone.app.models.Deck;
+import com.magicallinone.app.providers.DatabaseTable;
 
-public class DeckTable {
-	public static class Columns {
-		public static final String DECK_ID = "_id";
+public class DeckTable extends DatabaseTable {
+	
+	public static final String TABLE_NAME = "deck_table";
+	
+	public static class Columns extends DatabaseTable.Columns{
 		public static final String NAME = "name";
 		public static final String DESCRIPTION = "description";
 		public static final String FORMAT = "format";
@@ -20,5 +25,25 @@ public class DeckTable {
 		contentValues.put(Columns.FORMAT, deck.format);
 		contentValues.put(Columns.SIZE, deck.size);
 		return contentValues;
+	}
+
+	@Override
+	protected Map<String, String> getColumnTypes() {
+		Map<String, String> columnTypes = super.getColumnTypes();
+		columnTypes.put(Columns.NAME, "TEXT");
+		columnTypes.put(Columns.DESCRIPTION, "TEXT");
+		columnTypes.put(Columns.FORMAT, "TEXT");
+		columnTypes.put(Columns.SIZE, "INTEGER");
+		return columnTypes;
+	}
+	
+	@Override
+	protected String getConstraint() {
+		return "";
+	}
+
+	@Override
+	public String getName() {
+		return TABLE_NAME;
 	}
 }

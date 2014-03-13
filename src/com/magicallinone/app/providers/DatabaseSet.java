@@ -9,6 +9,7 @@ public abstract class DatabaseSet {
 	public abstract String getName();
 	
 	public abstract void onCreate(final SQLiteDatabase database);
+	public abstract void onUpgrade(final SQLiteDatabase database);
 	
 	public void onDowngrade(final SQLiteDatabase database, final int oldVersion, final int newVersion){
 		drop(database);

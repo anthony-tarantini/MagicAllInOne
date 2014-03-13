@@ -36,7 +36,7 @@ import com.magicallinone.app.services.ApiService;
 public class DeckListFragment extends BaseFragment implements ViewBinder,
 		LoaderCallbacks<Cursor>, OnItemClickListener {
 
-	private static final String[] COLUMNS = { DeckTable.Columns.DECK_ID,
+	private static final String[] COLUMNS = { DeckTable.Columns._ID,
 			DeckTable.Columns.NAME, DeckTable.Columns.DESCRIPTION,
 			DeckTable.Columns.FORMAT, DeckTable.Columns.SIZE, };
 	private static final int[] VIEWS = { R.id.list_item_deck_image,
