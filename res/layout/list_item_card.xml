@@ -25,7 +25,7 @@
             android:alpha="0.5"
             tools:ignore="contentDescription" />
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/list_item_card_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:paddingRight="5dp"
             android:textColor="@color/black" />
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/list_item_card_rules_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal" />
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/list_item_card_flavour_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

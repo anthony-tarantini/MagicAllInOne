@@ -1,5 +1,6 @@
 package com.magicallinone.app.fragment;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -12,6 +13,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,30 +40,23 @@ import com.magicallinone.app.utils.ImageUtils;
 import com.xtremelabs.imageutils.ImageLoaderListener;
 import com.xtremelabs.imageutils.ImageReturnedFrom;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
 
 public class CardListFragment extends BaseFragment implements ViewBinder,
 		OnItemClickListener, LoaderCallbacks<Cursor> {
 
-	public static final String[] COLUMNS = { CardsView.Columns.NAME,
-			CardsView.Columns.MANA_COST, CardsView.Columns.RULES_TEXT,
-			CardsView.Columns.FLAVOUR_TEXT, CardsView.Columns.NUMBER,
-			CardsView.Columns.WATERMARK, };
-	public static final int[] VIEW_IDS = { R.id.list_item_card_name,
-			R.id.list_item_card_mana_cost_layout,
-			R.id.list_item_card_rules_text, R.id.list_item_card_flavour_text,
-			R.id.list_item_card_image, R.id.list_item_card_watermark, };
+	public static final String[] COLUMNS = { CardsView.Columns.NAME, CardsView.Columns.MANA_COST, CardsView.Columns.RULES_TEXT, CardsView.Columns.FLAVOUR_TEXT, CardsView.Columns.NUMBER, CardsView.Columns.WATERMARK, };
+
+	public static final int[] VIEW_IDS = { R.id.list_item_card_name, R.id.list_item_card_mana_cost_layout, R.id.list_item_card_rules_text, R.id.list_item_card_flavour_text, R.id.list_item_card_image, R.id.list_item_card_watermark, };
 
 	public static final class Extras {
 		public static final String SET = "set";
 	}
 
 	public class SetReceiver extends BroadcastReceiver {
-
 		@Override
-		public void onReceive(Context context, Intent intent) {
+		public void onReceive(final Context context, final Intent intent) {
 			loadSet();
 			mProgressDialog.dismiss();
 		}
@@ -77,8 +72,8 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	private ProgressDialog mProgressDialog;
 	private OnCardSelectedListener mOnCardSelectedListener;
 
-	public static CardListFragment newInstance(String setId) {
-		CardListFragment cardListFragment = new CardListFragment();
+	public static CardListFragment newInstance(final String setId) {
+		final CardListFragment cardListFragment = new CardListFragment();
 		Bundle args = cardListFragment.getArguments();
 		if (args == null) {
 			args = new Bundle();
@@ -90,7 +85,7 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		mProgressDialog = new ProgressDialog(getActivity());
@@ -102,22 +97,17 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 		mSetId = getArguments().getString(Extras.SET);
 
 		mLoaderManager = getLoaderManager();
-		getImageLoader().setDefaultOptions(
-				MagicApplication.getImageLoaderOptions());
+		getImageLoader().setDefaultOptions(MagicApplication.getImageLoaderOptions());
 
 		createReceiver();
 		startApiService();
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_card_list, container,
-				false);
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		final View view = inflater.inflate(R.layout.fragment_card_list, container, false);
 
-		mAdapter = new SimpleCursorAdapter(getActivity(),
-				R.layout.list_item_card, null, COLUMNS, VIEW_IDS,
-				SimpleCursorAdapter.NO_SELECTION);
+		mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.list_item_card, null, COLUMNS, VIEW_IDS, SimpleCursorAdapter.NO_SELECTION);
 		mAdapter.setViewBinder(this);
 		mListView = (ListView) view.findViewById(R.id.card_listing);
 		mListView.setAdapter(mAdapter);
@@ -132,26 +122,26 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		int cardId = ((Integer) view.findViewById(R.id.list_item_card_image)
-				.getTag()).intValue();
+	public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+		final View imageView = view.findViewById(R.id.list_item_card_image);
+        final Integer tag = (Integer) imageView.getTag();
+        final int cardId = tag.intValue();
 		mOnCardSelectedListener.onCardSelected(cardId);
 	}
 
 	@Override
-	public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-		TextView textView;
-		ImageView imageView;
-		LinearLayout linearLayout;
+	public boolean setViewValue(final View view, final Cursor cursor, final int columnIndex) {
+		final TextView textView;
+		final ImageView imageView;
+		final LinearLayout linearLayout;
 		switch (view.getId()) {
 		case R.id.list_item_card_rules_text:
 			textView = (TextView) view;
-			String text = cursor.getString(columnIndex);
+			final String text = cursor.getString(columnIndex);
 			if (text != null) {
-				textView.setText(
-						ImageUtils.replaceManaSymbols(getActivity(), text),
-						BufferType.SPANNABLE);
+                final Activity activity = getActivity();
+                final Spannable textSpan = ImageUtils.replaceManaSymbols(activity, text);
+				textView.setText(textSpan, BufferType.SPANNABLE);
 			} else {
 				textView.setText(text);
 			}
@@ -165,31 +155,28 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 			textView.setText(cursor.getString(columnIndex));
 			return true;
 		case R.id.list_item_card_mana_cost_layout:
-			List<MatchResult> manaSymbols = new ArrayList<MatchResult>();
-			ImageUtils.getManaSymbols(cursor.getString(columnIndex),
-					manaSymbols);
-			LayoutInflater inflater = getActivity().getLayoutInflater();
+            final String manaText = cursor.getString(columnIndex);
+			final List<MatchResult> manaSymbols = ImageUtils.getManaSymbols(manaText);
+            final Activity activity = getActivity();
+			final LayoutInflater inflater = activity.getLayoutInflater();
 			linearLayout = (LinearLayout) view;
 			linearLayout.removeAllViews();
 			if (manaSymbols != null) {
-				ImageUtils.addManaSymbols(getActivity(), inflater,
-						linearLayout, manaSymbols);
+				ImageUtils.addManaSymbols(getActivity(), inflater,linearLayout, manaSymbols);
 			}
 			return true;
 		case R.id.list_item_card_watermark:
-			String watermark = cursor.getString(columnIndex);
+			final String watermark = cursor.getString(columnIndex);
 			imageView = (ImageView) view;
-			if (watermark != null && !watermark.equals(""))
-				ImageUtils.getWatermark(getActivity(), imageView, watermark);
-			else
-				imageView.setVisibility(View.GONE);
+			if (watermark != null && !watermark.equals("")) {
+                ImageUtils.getWatermark(getActivity(), imageView, watermark);
+            } else {
+                imageView.setVisibility(View.GONE);
+            }
 			return true;
-        //literally doing this in order to test
 		case R.id.list_item_card_image:
 			imageView = (ImageView) view;
-			getImageLoader().loadImage(
-					imageView,
-					ImageUtils.getImageUrl(cursor.getString(cursor
+			getImageLoader().loadImage(imageView, ImageUtils.getImageUrl(cursor.getString(cursor
 							.getColumnIndex(CardsView.Columns.SET_ID)), cursor
 							.getInt(columnIndex)), new ImageLoaderListener() {
 
@@ -243,24 +230,23 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String selection = CardsView.Columns.SET_ID + " = ?";
-		String[] selectionArgs = { mSetId, };
-		String orderBy = CardsView.Columns.NUMBER + " ASC";
-		mCursorLoader = new CursorLoader(getActivity(),
-				MagicContentProvider.Uris.CARDS_URI, null, selection,
-				selectionArgs, orderBy);
+	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
+		final String selection = CardsView.Columns.SET_ID + " = ?";
+		final String[] selectionArgs = { mSetId, };
+		final String orderBy = CardsView.Columns.NUMBER + " ASC";
+        final Activity activity = getActivity();
+		mCursorLoader = new CursorLoader(activity, MagicContentProvider.Uris.CARDS_URI, null, selection, selectionArgs, orderBy);
 		return mCursorLoader;
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+	public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
 		if (mAdapter != null && cursor != null)
 			mAdapter.swapCursor(cursor);
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
+	public void onLoaderReset(final Loader<Cursor> loader) {
 		if (mAdapter != null) {
 			mAdapter.swapCursor(null);
 			mAdapter.notifyDataSetChanged();
@@ -274,17 +260,18 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	private void startApiService() {
-		Intent intent = new Intent(getActivity(), ApiService.class);
+        final Activity activity = getActivity();
+		final Intent intent = new Intent(activity, ApiService.class);
 		intent.putExtra(ApiService.Extras.QUERY, mSetId);
-		intent.putExtra(ApiService.Extras.OPERATION,
-				ApiService.Operations.SINGLE_SET);
-		getActivity().startService(intent);
+		intent.putExtra(ApiService.Extras.OPERATION, ApiService.Operations.SINGLE_SET);
+		activity.startService(intent);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		getActivity().unregisterReceiver(mReceiver);
+        final Activity activity = getActivity();
+		activity.unregisterReceiver(mReceiver);
 		mReceiver = null;
 		mOnCardSelectedListener = null;
 	}
@@ -293,7 +280,8 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	public void onResume() {
 		super.onResume();
 		createReceiver();
-		getActivity().registerReceiver(mReceiver, mFilter);
+        final Activity activity = getActivity();
+		activity.registerReceiver(mReceiver, mFilter);
 	}
 
 	public void setOnCardSelectedListener(OnCardSelectedListener listener) {

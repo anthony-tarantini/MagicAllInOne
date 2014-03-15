@@ -1,4 +1,4 @@
-package com.magicallinone.app.ui;
+package com.magicallinone.app.views;
 
 import com.magicallinone.app.managers.FontManager;
 

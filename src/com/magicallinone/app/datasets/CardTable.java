@@ -1,12 +1,12 @@
 package com.magicallinone.app.datasets;
 
-import java.util.Map;
-
 import android.content.ContentValues;
 
 import com.magicallinone.app.models.Card;
 import com.magicallinone.app.providers.DatabaseTable;
 import com.magicallinone.app.utils.DBUtils;
+
+import java.util.Map;
 
 public class CardTable extends DatabaseTable {
 	

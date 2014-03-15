@@ -1,13 +1,14 @@
 package com.magicallinone.app.providers;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 import com.magicallinone.app.utils.DBUtils;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class DatabaseTable extends DatabaseSet {
 	public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
@@ -18,7 +19,7 @@ public abstract class DatabaseTable extends DatabaseSet {
 	}
 	
 	protected Map<String, String> getColumnTypes(){
-		Map<String, String> columnTypes = new LinkedHashMap<String, String>();
+		final Map<String, String> columnTypes = new LinkedHashMap<String, String>();
 		columnTypes.put(Columns._ID, "INTEGER PRIMARY KEY AUTOINCREMENT");
 		return columnTypes;
 	}
@@ -35,8 +36,11 @@ public abstract class DatabaseTable extends DatabaseSet {
 	@Override
 	public void onCreate(SQLiteDatabase database) {
 		final Map<String, String> columns = getColumnTypes();
-		final String query = CREATE_TABLE + getName() + " ("
-				+ DBUtils.mapToString(columns) + getConstraintString() + ");";
+        final String tableName = getName();
+        final String columnsString = DBUtils.mapToString(columns);
+        final String constraintString = getConstraintString();
+        final String query = CREATE_TABLE + tableName + " (" + columnsString +  constraintString + ");";
+        Log.d("MagicDatabase", query);
 		database.execSQL(query);
 	}
 
@@ -61,20 +65,17 @@ public abstract class DatabaseTable extends DatabaseSet {
 	}
 
 	@Override
-	public long insert(final SQLiteDatabase database, final Uri uri,
-			final ContentValues values) {
+	public long insert(final SQLiteDatabase database, final Uri uri, final ContentValues values) {
 		return database.insert(getName(), null, values);
 	}
 
 	@Override
-	public int bulkInsert(final SQLiteDatabase database,
-			final ContentValues[] values) {
+	public int bulkInsert(final SQLiteDatabase database, final ContentValues[] values) {
 		return bulkInsert(database, null, values);
 	}
 
 	@Override
-	public int bulkInsert(final SQLiteDatabase database, final Uri uri,
-			final ContentValues[] values) {
+	public int bulkInsert(final SQLiteDatabase database, final Uri uri, final ContentValues[] values) {
 		int inserts = 0;
 		database.beginTransaction();
 		try {
@@ -90,28 +91,22 @@ public abstract class DatabaseTable extends DatabaseSet {
 	}
 
 	@Override
-	public int update(final SQLiteDatabase database,
-			final ContentValues values, final String selection,
-			final String[] selectionArgs) {
+	public int update(final SQLiteDatabase database, final ContentValues values, final String selection, final String[] selectionArgs) {
 		return update(database, null, values, selection, selectionArgs);
 	}
 
 	@Override
-	public int update(final SQLiteDatabase database, final Uri uri,
-			final ContentValues values, final String selection,
-			final String[] selectionArgs) {
+	public int update(final SQLiteDatabase database, final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {
 		return database.update(getName(), values, selection, selectionArgs);
 	}
 
 	@Override
-	public int delete(final SQLiteDatabase database, final String selection,
-			final String[] selectionArgs) {
+	public int delete(final SQLiteDatabase database, final String selection, final String[] selectionArgs) {
 		return delete(database, null, selection, selectionArgs);
 	}
 
 	@Override
-	public int delete(final SQLiteDatabase database, final Uri uri,
-			final String selection, final String[] selectionArgs) {
+	public int delete(final SQLiteDatabase database, final Uri uri, final String selection, final String[] selectionArgs) {
 		return database.delete(getName(), selection, selectionArgs);
 	}
 }

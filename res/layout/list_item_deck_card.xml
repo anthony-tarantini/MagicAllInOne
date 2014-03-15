@@ -11,7 +11,7 @@
         android:layout_gravity="center_vertical"
         android:orientation="horizontal" >
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/list_item_deck_card_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:gravity="center"
             android:orientation="horizontal" />
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/list_item_deck_card_quantity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

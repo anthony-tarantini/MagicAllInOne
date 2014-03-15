@@ -1,15 +1,5 @@
 package com.magicallinone.app.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.magicallinone.app.R;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
@@ -19,6 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.magicallinone.app.R;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ImageUtils {
 	private static final String IMAGE_BASE_URL = "http://magiccards.info/scans/en/";
@@ -30,25 +31,23 @@ public class ImageUtils {
 		public static final String WATERMARKS = "watermarks";
 	}
 
-	public static String getImageUrl(String set, int number) {
-		String imageUrl = IMAGE_BASE_URL + set.toLowerCase() + "/" + number
-				+ ".jpg";
+	public static String getImageUrl(final String set, final int number) {
+		final String imageUrl = IMAGE_BASE_URL + set.toLowerCase() + "/" + number + ".jpg";
 		return imageUrl;
 	}
 
-	public static ImageSpan getManaSymbolImageSpan(Context context,
-			Drawable drawable) {
-		drawable.setBounds(0, 0, drawable.getIntrinsicWidth() * 6,
-				drawable.getIntrinsicHeight() * 6);
+	public static ImageSpan getManaSymbolImageSpan(final Drawable drawable) {
+        final int width = drawable.getIntrinsicWidth() * 6;
+        final int height = drawable.getIntrinsicHeight() * 6;
+		drawable.setBounds(0, 0, width, height);
 		return new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE);
 	}
 
-	public static Drawable getDrawable(Context context, String folder,
-			String filename) {
+	public static Drawable getDrawable(final Context context, final String folder, final String filename) {
 		Drawable drawable = null;
-		String filePath = folder + "/" + filename + ".png";
+		final String filePath = folder + "/" + filename + ".png";
 		try {
-			InputStream inputStream = context.getAssets().open(filePath);
+			final InputStream inputStream = context.getAssets().open(filePath);
 			drawable = Drawable.createFromStream(inputStream, null);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -56,59 +55,63 @@ public class ImageUtils {
 		return drawable;
 	}
 
-	public static Spannable replaceManaSymbols(Context context, String text) {
-		SpannableStringBuilder spannableText = new SpannableStringBuilder(text);
-		List<MatchResult> matchResults = new ArrayList<MatchResult>();
-		getManaSymbols(text, matchResults);
-		for (MatchResult matchResult : matchResults) {
-			Drawable drawable = getDrawable(context, Folders.MANA_SYMBOLS,
-					createFilename(matchResult));
+	public static Spannable replaceManaSymbols(final Context context, final String text) {
+		final SpannableStringBuilder spannableText = new SpannableStringBuilder(text);
+		final List<MatchResult> matchResults = getManaSymbols(text);
+
+        for (final MatchResult matchResult : matchResults) {
+            final String filename = createFilename(matchResult);
+			final Drawable drawable = getDrawable(context, Folders.MANA_SYMBOLS, filename);
 			if (drawable != null) {
-				spannableText.setSpan(
-						getManaSymbolImageSpan(context, drawable),
-						matchResult.start(), matchResult.end(),
-						Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                final ImageSpan imageSpan = getManaSymbolImageSpan(drawable);
+                final int start = matchResult.start();
+                final int end = matchResult.end();
+				spannableText.setSpan(imageSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 			}
 		}
 		return spannableText;
 	}
 
-	public static void getWatermark(Context context, ImageView imageView,
-			String watermark) {
-		imageView.setImageDrawable(ImageUtils.getDrawable(context,
-				Folders.WATERMARKS, watermark));
+	public static void getWatermark(final Context context, final ImageView imageView, final String watermark) {
+		imageView.setImageDrawable(ImageUtils.getDrawable(context, Folders.WATERMARKS, watermark));
 		imageView.setVisibility(View.VISIBLE);
 	}
 
-	public static void getManaSymbols(String manaCost, List<MatchResult> matchResults) {
-		if (manaCost != null && !manaCost.equals("")) {
-			Pattern pattern = Pattern.compile("\\{(.*?)\\}");
-			Matcher matcher = pattern.matcher(manaCost);
+	public static List<MatchResult> getManaSymbols(final String manaCost) {
+        final List<MatchResult> matchResults = new ArrayList<MatchResult>();
+        final boolean hasManaCost = manaCost != null && !manaCost.isEmpty();
+        if (hasManaCost) {
+			final Pattern pattern = Pattern.compile("\\{(.*?)\\}");
+			final Matcher matcher = pattern.matcher(manaCost);
 			while (matcher.find()) {
-				matchResults.add(matcher.toMatchResult());
+                final MatchResult matchResult = matcher.toMatchResult();
+				matchResults.add(matchResult);
 			}
 		}
+        return matchResults;
 	}
 
-	public static void addManaSymbols(Context context, LayoutInflater inflater,
-			LinearLayout linearLayout, List<MatchResult> manaSymbols) {
-		for (MatchResult symbol : manaSymbols) {
+	public static void addManaSymbols(final Context context, final LayoutInflater inflater, final LinearLayout linearLayout, final List<MatchResult> manaSymbols) {
+		for (final MatchResult symbol : manaSymbols) {
 			addSymbol(context, inflater, linearLayout, symbol);
 		}
 	}
 
-	public static void addSymbol(Context context, LayoutInflater inflater,
-			LinearLayout linearLayout, MatchResult symbol) {
-		View manaSymbol = inflater
-				.inflate(R.layout.list_item_mana_symbol, null);
-		((ImageView) manaSymbol.findViewById(R.id.list_item_mana_symbol_image))
-				.setImageDrawable(getDrawable(context, Folders.MANA_SYMBOLS,
-						createFilename(symbol)));
+	public static void addSymbol(final Context context, final LayoutInflater inflater, final LinearLayout linearLayout, final MatchResult symbol) {
+		final View manaSymbol = inflater.inflate(R.layout.list_item_mana_symbol, null);
+        final ImageView imageView = (ImageView) manaSymbol.findViewById(R.id.list_item_mana_symbol_image);
+        final String filename = createFilename(symbol);
+        final Drawable drawable = getDrawable(context, Folders.MANA_SYMBOLS, filename);
+        imageView.setImageDrawable(drawable);
 		linearLayout.addView(manaSymbol);
 	}
 
-	public static String createFilename(MatchResult result) {
-		return result.group().replace("/", "_").replace("{", "")
-				.replace("}", "").toLowerCase();
+	public static String createFilename(final MatchResult result) {
+        String filename = result.group();
+        filename.replace("/", "_");
+        filename.replace("{", "");
+        filename.replace("}", "");
+        filename.toLowerCase(Locale.getDefault());
+		return filename;
 	}
 }

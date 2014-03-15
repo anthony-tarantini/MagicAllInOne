@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 	
-    <com.magicallinone.app.ui.BebasNeueTextView 
+    <com.magicallinone.app.views.BebasNeueTextView
         android:id="@+id/fragment_decklist_no_items"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

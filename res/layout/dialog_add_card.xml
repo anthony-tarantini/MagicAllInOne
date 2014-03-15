@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.magicallinone.app.ui.BebasNeueEditText
+    <com.magicallinone.app.views.BebasNeueEditText
         android:id="@+id/dialog_add_card_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <com.magicallinone.app.ui.BebasNeueButton
+        <com.magicallinone.app.views.BebasNeueButton
             android:id="@+id/dialog_add_card_cancel"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
@@ -35,7 +35,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/btn_holo_light_gray" />
         
-        <com.magicallinone.app.ui.BebasNeueButton
+        <com.magicallinone.app.views.BebasNeueButton
             android:id="@+id/dialog_add_card_submit"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"

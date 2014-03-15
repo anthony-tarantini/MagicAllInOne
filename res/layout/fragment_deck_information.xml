@@ -17,7 +17,7 @@
             android:layout_centerVertical="true"
             tools:ignore="contentDescription" />
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/fragment_deck_information_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:layout_marginTop="5dp"
             android:textSize="20sp" />
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/fragment_deck_information_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/fragment_deck_information_format"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             android:textColor="@color/white"
             android:textSize="18sp" />
 
-        <com.magicallinone.app.ui.BebasNeueTextView
+        <com.magicallinone.app.views.BebasNeueTextView
             android:id="@+id/fragment_deck_information_size"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

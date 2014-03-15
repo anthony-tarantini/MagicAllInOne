@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="50dp" />
 
-    <com.magicallinone.app.ui.BebasNeueTextView
+    <com.magicallinone.app.views.BebasNeueTextView
         android:id="@+id/fragment_deck_card_list_no_items"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-            <com.magicallinone.app.ui.BebasNeueButton
+            <com.magicallinone.app.views.BebasNeueButton
                 android:id="@+id/fragment_deck_card_list_land"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
-            <com.magicallinone.app.ui.BebasNeueButton
+            <com.magicallinone.app.views.BebasNeueButton
                 android:id="@+id/fragment_deck_card_list_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

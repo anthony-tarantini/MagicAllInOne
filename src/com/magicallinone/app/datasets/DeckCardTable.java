@@ -1,12 +1,12 @@
 package com.magicallinone.app.datasets;
 
-import java.util.Map;
-
 import com.magicallinone.app.providers.DatabaseTable;
+
+import java.util.Map;
 
 public class DeckCardTable extends DatabaseTable {
 	
-	public static final String TABLE_NAME = "deck_card";
+	public static final String TABLE_NAME = "deck_card_table";
 	
 	public class Columns extends DatabaseTable.Columns {
 		public static final String DECK_ID = "deck_id";

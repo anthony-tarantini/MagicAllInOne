@@ -10,7 +10,7 @@ public class BaseFragment extends Fragment {
 	private ImageLoader mLoader;
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mLoader = ImageLoader.buildImageLoaderForFragment(this);
 	}

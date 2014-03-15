@@ -12,8 +12,8 @@ public enum FontManager {
 	private Typeface mAppFont;
 
 	private FontManager(){
-		AssetManager assetManager = MagicApplication.getContext().getResources().getAssets();
-		 mAppFont = Typeface.createFromAsset(assetManager, "fonts/BebasNeue.otf");
+		final AssetManager assetManager = MagicApplication.getContext().getResources().getAssets();
+        mAppFont = Typeface.createFromAsset(assetManager, "fonts/BebasNeue.otf");
 	}
 
 	public Typeface getAppFont(){

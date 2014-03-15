@@ -7,7 +7,7 @@ public class DeckListView extends DatabaseView {
 	public static final String VIEW_NAME = "deck_list_view";
 	
 	public static final class Columns{
-		public static final String CARD_ID = "card_id";
+		public static final String CARD_ID = "_id";
 		public static final String DECK_ID = "deck_id";
 		public static final String NAME = "name";
 		public static final String MANA_COST = "mana_cost";
@@ -55,12 +55,9 @@ public class DeckListView extends DatabaseView {
 				+ ", " + DeckCardTable.TABLE_NAME 
 				+ "." + DeckCardTable.Columns.QUANTITY
 				+ " AS " + DeckListView.Columns.QUANTITY
-				+ " FROM " + CardTable.TABLE_NAME 
-				+ " " + CardTable.TABLE_NAME 
-				+ ", " + DeckCardTable.TABLE_NAME 
-				+ " " + DeckCardTable.TABLE_NAME
+				+ " FROM " + CardTable.TABLE_NAME
+				+ ", " + DeckCardTable.TABLE_NAME
 				+ ", " + SetCardTable.TABLE_NAME
-				+ " " + SetCardTable.TABLE_NAME
 				+ " WHERE " + CardTable.TABLE_NAME 
 				+ "." + CardTable.Columns.MULTIVERSE_ID
 				+ " = " + DeckCardTable.TABLE_NAME + "." + DeckCardTable.Columns.CARD_ID

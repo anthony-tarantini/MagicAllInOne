@@ -1,11 +1,11 @@
 package com.magicallinone.app.datasets;
 
-import java.util.Map;
-
 import android.content.ContentValues;
 
 import com.magicallinone.app.models.Deck;
 import com.magicallinone.app.providers.DatabaseTable;
+
+import java.util.Map;
 
 public class DeckTable extends DatabaseTable {
 	
@@ -36,10 +36,10 @@ public class DeckTable extends DatabaseTable {
 		columnTypes.put(Columns.SIZE, "INTEGER");
 		return columnTypes;
 	}
-	
+
 	@Override
 	protected String getConstraint() {
-		return "";
+		return "UNIQUE (" + Columns.NAME + ") ON CONFLICT REPLACE";
 	}
 
 	@Override

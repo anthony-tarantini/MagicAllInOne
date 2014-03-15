@@ -1,12 +1,10 @@
 package com.magicallinone.app.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.MatchResult;
-
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -35,8 +33,11 @@ import com.magicallinone.app.listeners.CardMenuListener;
 import com.magicallinone.app.models.CardTag;
 import com.magicallinone.app.providers.MagicContentProvider;
 import com.magicallinone.app.services.ApiService;
-import com.magicallinone.app.ui.DeckListContextMenu;
+import com.magicallinone.app.views.DeckListContextMenu;
 import com.magicallinone.app.utils.ImageUtils;
+
+import java.util.List;
+import java.util.regex.MatchResult;
 
 public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 		LoaderCallbacks<Cursor>, OnItemClickListener, CardMenuListener {
@@ -54,11 +55,11 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 		public static final int CARD_NUMBER = 2;
 	}
 
-	public static final String[] COLUMNS = { DeckListView.Columns.NAME,
-			DeckListView.Columns.MANA_COST, DeckListView.Columns.QUANTITY, };
-	public static final int[] VIEWS = { R.id.list_item_deck_card_name,
-			R.id.list_item_deck_card_mana_cost_layout,
-			R.id.list_item_deck_card_quantity, };
+    public static final int DECREMENT = -1;
+    public static final int INCREMENT = 1;
+
+	public static final String[] COLUMNS = { DeckListView.Columns.NAME, DeckListView.Columns.MANA_COST, DeckListView.Columns.QUANTITY, };
+	public static final int[] VIEWS = { R.id.list_item_deck_card_name, R.id.list_item_deck_card_mana_cost_layout, R.id.list_item_deck_card_quantity, };
 
 	private ProgressDialog mProgressDialog;
 	private LoaderManager mLoaderManager;
@@ -76,7 +77,7 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	};
 
 	public static DeckCardListFragment newInstance(int deckId) {
-		DeckCardListFragment fragment = new DeckCardListFragment();
+		final DeckCardListFragment fragment = new DeckCardListFragment();
 
 		Bundle args = fragment.getArguments();
 		if (args == null)
@@ -101,29 +102,24 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_deck_card_list,
-				container, false);
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		final View view = inflater.inflate(R.layout.fragment_deck_card_list, container, false);
 
-		mAdapter = new SimpleCursorAdapter(getActivity(),
-				R.layout.list_item_deck_card, null, COLUMNS, VIEWS,
-				SimpleCursorAdapter.NO_SELECTION);
+        final Activity activity = getActivity();
+
+        mAdapter = new SimpleCursorAdapter(activity, R.layout.list_item_deck_card, null, COLUMNS, VIEWS, SimpleCursorAdapter.NO_SELECTION);
 		mAdapter.setViewBinder(this);
-		mListView = (ListView) view
-				.findViewById(R.id.fragment_deck_card_list_list);
+		mListView = (ListView) view.findViewById(R.id.fragment_deck_card_list_list);
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemClickListener(this);
 
-		mEmptyView = (TextView) view
-				.findViewById(R.id.fragment_deck_card_list_no_items);
+		mEmptyView = (TextView) view.findViewById(R.id.fragment_deck_card_list_no_items);
 		mLoaderManager = getLoaderManager();
 
-		mAddCardButton = (Button) view
-				.findViewById(R.id.fragment_deck_card_list_add);
+		mAddCardButton = (Button) view.findViewById(R.id.fragment_deck_card_list_add);
 		mAddCardButton.setOnClickListener(mOnAddClickListener);
 
-		mMenu = new DeckListContextMenu(getActivity(), this);
+		mMenu = new DeckListContextMenu(activity, this);
 
 		return view;
 	}
@@ -139,23 +135,23 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String selection = DeckListView.Columns.DECK_ID + " = ?";
-		String[] selectionArgs = { String.valueOf(mDeckId), };
-		String orderBy = CardsView.Columns.NUMBER + " ASC";
-		mCursorLoader = new CursorLoader(getActivity(),
-				MagicContentProvider.Uris.DECK_LIST_URI, null, selection,
-				selectionArgs, orderBy);
+	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
+		final String selection = DeckListView.Columns.DECK_ID + " = ?";
+		final String[] selectionArgs = { String.valueOf(mDeckId), };
+		final String orderBy = CardsView.Columns.NUMBER + " ASC";
+        final Activity activity = getActivity();
+        mCursorLoader = new CursorLoader(activity, MagicContentProvider.Uris.DECK_LIST_URI, null, selection, selectionArgs, orderBy);
 		return mCursorLoader;
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+	public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
 		mProgressDialog.dismiss();
 		if (mAdapter != null && cursor != null) {
-			cursor.setNotificationUri(getActivity().getContentResolver(),
-					MagicContentProvider.Uris.DECK_CARD_URI);
-			mAdapter.swapCursor(cursor);
+            final Activity activity = getActivity();
+            final ContentResolver contentResolver = activity.getContentResolver();
+            cursor.setNotificationUri(contentResolver, MagicContentProvider.Uris.DECK_CARD_URI);
+            mAdapter.swapCursor(cursor);
 		}
 		if (cursor != null && cursor.moveToFirst()) {
 			showDeckCardsScreen();
@@ -165,7 +161,7 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
+	public void onLoaderReset(final Loader<Cursor> loader) {
 		if (mAdapter != null) {
 			mAdapter.swapCursor(null);
 			mAdapter.notifyDataSetChanged();
@@ -183,31 +179,29 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-		TextView textView;
-		LinearLayout linearLayout;
-		switch (view.getId()) {
+	public boolean setViewValue(final View view, final Cursor cursor, final int columnIndex) {
+		final TextView textView;
+		final LinearLayout linearLayout;
+        final Activity activity = getActivity();
+        switch (view.getId()) {
 		case R.id.list_item_deck_card_name:
 			textView = (TextView) view;
 			textView.setText(cursor.getString(columnIndex));
 			return true;
 		case R.id.list_item_deck_card_mana_cost_layout:
-			List<MatchResult> manaSymbols = new ArrayList<MatchResult>();
-			ImageUtils.getManaSymbols(cursor.getString(columnIndex),
-					manaSymbols);
-			LayoutInflater inflater = getActivity().getLayoutInflater();
+			final List<MatchResult> manaSymbols = ImageUtils.getManaSymbols(cursor.getString(columnIndex));
+			LayoutInflater inflater = activity.getLayoutInflater();
 			linearLayout = (LinearLayout) view;
 			linearLayout.removeAllViews();
 			if (manaSymbols != null) {
-				ImageUtils.addManaSymbols(getActivity(), inflater,
+				ImageUtils.addManaSymbols(activity, inflater,
 						linearLayout, manaSymbols);
 			}
 			return true;
 		case R.id.list_item_deck_card_quantity:
 			textView = (TextView) view;
 			textView.setTag(CardTag.createCardTag(cursor));
-			textView.setText(getActivity().getString(R.string.x)
-					+ cursor.getString(columnIndex));
+			textView.setText(activity.getString(R.string.x) + cursor.getString(columnIndex));
 			return true;
 		}
 		return false;
@@ -217,10 +211,14 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		if (mCurrentMenuView != view) {
-			if (mCurrentMenuView != null)
-				removeMenuView(mCurrentMenuView);
-			((FrameLayout) view).addView(mMenu.getMenu((CardTag) view
-					.findViewById(R.id.list_item_deck_card_quantity).getTag()));
+			if (mCurrentMenuView != null) {
+                removeMenuView(mCurrentMenuView);
+            }
+            final FrameLayout frameLayout = (FrameLayout) view;
+            final View cardView = view.findViewById(R.id.list_item_deck_card_quantity);
+            final CardTag cardTag = (CardTag) cardView.getTag();
+            final View menu = mMenu.getMenu(cardTag);
+            frameLayout.addView(menu);
 			mCurrentMenuView = view;
 		} else {
 			removeMenuView(view);
@@ -229,8 +227,9 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	private void removeMenuView(View view) {
-		((FrameLayout) view).removeView(view
-				.findViewById(R.id.list_item_overlay_menu));
+        final FrameLayout frameLayout = (FrameLayout) view;
+        final View overlayMenu = view.findViewById(R.id.list_item_overlay_menu);
+        frameLayout.removeView(overlayMenu);
 	}
 
 	@Override
@@ -241,27 +240,28 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 
 	@Override
 	public void onRemoveSelected() {
-		CardTag cardTag = (CardTag) mCurrentMenuView.findViewById(
-				R.id.list_item_deck_card_quantity).getTag();
+        final View quantityView = mCurrentMenuView.findViewById(R.id.list_item_deck_card_quantity);
+        final CardTag cardTag = (CardTag) quantityView.getTag();
 		removeCard(cardTag.getId());
 	}
 
+    private void changeCardCount(final int change) {
+        final View quantityView = mCurrentMenuView.findViewById(R.id.list_item_deck_card_quantity);
+        final CardTag cardTag = (CardTag) quantityView.getTag();
+        final int quantity = cardTag.getQuantity() + change;
+        final int id = cardTag.getId();
+        updateCardCount(id, quantity);
+        mMenu.toggleVisibilities(quantity);
+    }
+
 	@Override
 	public void onMinusSelected() {
-		CardTag cardTag = (CardTag) mCurrentMenuView.findViewById(
-				R.id.list_item_deck_card_quantity).getTag();
-		int quantity = cardTag.getQuantity() - 1;
-		updateCardCount(cardTag.getId(), quantity);
-		mMenu.toggleVisibilities(quantity);
+        changeCardCount(DECREMENT);
 	}
 
 	@Override
 	public void onPlusSelected() {
-		CardTag cardTag = (CardTag) mCurrentMenuView.findViewById(
-				R.id.list_item_deck_card_quantity).getTag();
-		int quantity = cardTag.getQuantity() + 1;
-		updateCardCount(cardTag.getId(), quantity);
-		mMenu.toggleVisibilities(quantity);
+        changeCardCount(INCREMENT);
 	}
 
 	@Override
@@ -271,21 +271,21 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	private void updateCardCount(int cardId, int quantity) {
-		Intent intent = new Intent(getActivity(), ApiService.class);
+        final Activity activity = getActivity();
+        final Intent intent = new Intent(activity, ApiService.class);
 		intent.putExtra(ApiService.Extras.QUANTITY, quantity);
-		intent.putExtra(ApiService.Extras.OPERATION,
-				ApiService.Operations.UPDATE_COUNT);
+		intent.putExtra(ApiService.Extras.OPERATION, ApiService.Operations.UPDATE_COUNT);
 		intent.putExtra(ApiService.Extras.QUERY, String.valueOf(cardId));
 		intent.putExtra(ApiService.Extras.COLUMN, DeckCardTable.Columns.CARD_ID);
-		getActivity().startService(intent);
+		activity.startService(intent);
 	}
 
 	private void removeCard(int cardId) {
-		Intent intent = new Intent(getActivity(), ApiService.class);
-		intent.putExtra(ApiService.Extras.OPERATION,
-				ApiService.Operations.REMOVE_CARD);
+        final Activity activity = getActivity();
+        final Intent intent = new Intent(activity, ApiService.class);
+		intent.putExtra(ApiService.Extras.OPERATION, ApiService.Operations.REMOVE_CARD);
 		intent.putExtra(ApiService.Extras.QUERY, String.valueOf(cardId));
 		intent.putExtra(ApiService.Extras.COLUMN, DeckCardTable.Columns.CARD_ID);
-		getActivity().startService(intent);
+		activity.startService(intent);
 	}
 }

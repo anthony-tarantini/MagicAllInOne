@@ -3,6 +3,7 @@ package com.magicallinone.app.providers;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 public abstract class DatabaseView extends DatabaseSet {
 	private static final String CREATE_VIEW = "CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM ( %s );";
@@ -13,11 +14,12 @@ public abstract class DatabaseView extends DatabaseSet {
 	@Override
 	public void onCreate(final SQLiteDatabase db) {		
 		final String query = String.format(CREATE_VIEW, getName(), getSelectString());
+        Log.d("MagicDatabase", query);
 		db.execSQL(query);
 	}
 	
 	@Override
-	public void onUpgrade(SQLiteDatabase db) {
+	public void onUpgrade(final SQLiteDatabase db) {
 		final String query = String.format(DROP_VIEW, getName());
 		db.execSQL(query);
 		onCreate(db);
@@ -29,49 +31,42 @@ public abstract class DatabaseView extends DatabaseSet {
 		db.execSQL(query);
 	}
 	@Override
-	public int delete(SQLiteDatabase database, Uri uri, String selection,
-			String[] selectionArgs) {
+	public int delete(final SQLiteDatabase database, final Uri uri, final String selection, final String[] selectionArgs) {
 		return 0;
 	}
 
 	@Override
-	public int delete(SQLiteDatabase database, String selection,
-			String[] selectionArgs) {
+	public int delete(final SQLiteDatabase database, final String selection, final String[] selectionArgs) {
 		return 0;
 	}
 
 	@Override
-	public int update(SQLiteDatabase database, Uri uri, ContentValues values,
-			String selection, String[] selectionArgs) {
+	public int update(final SQLiteDatabase database, final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {
 		return 0;
 	}
 
 	@Override
-	public int update(SQLiteDatabase database, ContentValues values,
-			String selection, String[] selectionArgs) {
+	public int update(final SQLiteDatabase database, final ContentValues values, final String selection, final String[] selectionArgs) {
 		return 0;
 	}
 
 	@Override
-	public int bulkInsert(SQLiteDatabase database, Uri uri,
-			ContentValues[] values) {
+	public int bulkInsert(final SQLiteDatabase database, final Uri uri, final ContentValues[] values) {
 		return 0;
 	}
 
 	@Override
-	public int bulkInsert(SQLiteDatabase database, ContentValues[] values) {
+	public int bulkInsert(final SQLiteDatabase database, final ContentValues[] values) {
 		return 0;
 	}
 
 	@Override
-	public long insert(SQLiteDatabase database, Uri uri, ContentValues values) {
+	public long insert(final SQLiteDatabase database, final Uri uri, final ContentValues values) {
 		return 0;
 	}
 
 	@Override
-	public long insert(SQLiteDatabase database, ContentValues values) {
+	public long insert(final SQLiteDatabase database, final ContentValues values) {
 		return 0;
 	}
-	
-	
 }

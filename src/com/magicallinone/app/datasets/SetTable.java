@@ -1,11 +1,11 @@
 package com.magicallinone.app.datasets;
 
-import java.util.Map;
-
 import android.content.ContentValues;
 
 import com.magicallinone.app.models.Set;
 import com.magicallinone.app.providers.DatabaseTable;
+
+import java.util.Map;
 
 public class SetTable extends DatabaseTable {
 	

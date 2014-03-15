@@ -7,7 +7,7 @@ public class CardsView extends DatabaseView {
 	public static final String VIEW_NAME = "cards_view";
 	
 	public static final class Columns{
-		public static final String CARD_ID = "card_id";
+		public static final String CARD_ID = "_id";
 		public static final String SET_ID = "set_id";
 		public static final String NAME = "name";
 		public static final String MANA_COST = "mana_cost";
@@ -43,8 +43,8 @@ public class CardsView extends DatabaseView {
 				+ ", " + CardTable.TABLE_NAME 
 				+ "." + CardTable.Columns.WATERMARK
 				+ " AS " + CardsView.Columns.WATERMARK
-				+ " FROM " + CardTable.TABLE_NAME + " card" 
-				+ ", " + SetCardTable.TABLE_NAME + " set_card"
+				+ " FROM " + CardTable.TABLE_NAME
+				+ ", " + SetCardTable.TABLE_NAME
 				+ " WHERE " + CardTable.TABLE_NAME 
 				+ "." + CardTable.Columns.MULTIVERSE_ID
 				+ " = " + SetCardTable.Columns.CARD_ID; 

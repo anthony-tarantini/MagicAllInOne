@@ -1,9 +1,11 @@
 package com.magicallinone.app.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -36,12 +38,8 @@ import com.magicallinone.app.services.ApiService;
 public class DeckListFragment extends BaseFragment implements ViewBinder,
 		LoaderCallbacks<Cursor>, OnItemClickListener {
 
-	private static final String[] COLUMNS = { DeckTable.Columns._ID,
-			DeckTable.Columns.NAME, DeckTable.Columns.DESCRIPTION,
-			DeckTable.Columns.FORMAT, DeckTable.Columns.SIZE, };
-	private static final int[] VIEWS = { R.id.list_item_deck_image,
-			R.id.list_item_deck_title, R.id.list_item_deck_description,
-			R.id.list_item_deck_format, R.id.list_item_deck_size, };
+	private static final String[] COLUMNS = { DeckTable.Columns._ID, DeckTable.Columns.NAME, DeckTable.Columns.DESCRIPTION, DeckTable.Columns.FORMAT, DeckTable.Columns.SIZE, };
+	private static final int[] VIEWS = { R.id.list_item_deck_image, R.id.list_item_deck_title, R.id.list_item_deck_description, R.id.list_item_deck_format, R.id.list_item_deck_size, };
 
 	private ProgressDialog mProgressDialog;
 	private LoaderManager mLoaderManager;
@@ -157,11 +155,12 @@ public class DeckListFragment extends BaseFragment implements ViewBinder,
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+	public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
 		mProgressDialog.dismiss();
 		if (mAdapter != null && cursor != null) {
-			cursor.setNotificationUri(getActivity().getContentResolver(),
-					MagicContentProvider.Uris.DECKS_URI);
+            final Activity activity = getActivity();
+            final ContentResolver contentResolver = activity.getContentResolver();
+            cursor.setNotificationUri(contentResolver, MagicContentProvider.Uris.DECKS_URI);
 			mAdapter.swapCursor(cursor);
 		}
 		if (cursor != null && cursor.moveToFirst()) {
