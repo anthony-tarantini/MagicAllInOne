@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.SparseArray;
 
@@ -120,30 +119,37 @@ public class MagicContentProvider extends ContentProvider {
 		mMappings.append(Codes.SET, new SetTable());
 		mUriMatcher.addURI(AUTHORITY, Paths.SET_TABLE + "/*", Codes.SET_STAR);
 		mMappings.append(Codes.SET_STAR, new SetTable());
+
 		mUriMatcher.addURI(AUTHORITY, Paths.CARD_TABLE, Codes.CARD);
 		mMappings.append(Codes.CARD, new CardTable());
 		mUriMatcher.addURI(AUTHORITY, Paths.CARD_TABLE + "/*", Codes.CARD_STAR);
 		mMappings.append(Codes.CARD_STAR, new CardTable());
+
 		mUriMatcher.addURI(AUTHORITY, Paths.SET_CARD_TABLE, Codes.SET_CARD);
 		mMappings.append(Codes.SET_CARD, new SetCardTable());
 		mUriMatcher.addURI(AUTHORITY, Paths.SET_CARD_TABLE + "/*", Codes.SET_CARD_STAR);
 		mMappings.append(Codes.SET_CARD_STAR, new SetCardTable());
+
 		mUriMatcher.addURI(AUTHORITY, Paths.DECK_TABLE, Codes.DECKS);
 		mMappings.append(Codes.DECKS, new DeckTable());
 		mUriMatcher.addURI(AUTHORITY, Paths.DECK_TABLE + "/*", Codes.DECKS_STAR);
 		mMappings.append(Codes.DECKS_STAR, new DeckTable());
+
 		mUriMatcher.addURI(AUTHORITY, Paths.DECK_CARD_TABLE, Codes.DECK_CARD);
 		mMappings.append(Codes.DECK_CARD, new DeckCardTable());
 		mUriMatcher.addURI(AUTHORITY, Paths.DECK_CARD_TABLE + "/*", Codes.DECK_CARD_STAR);
 		mMappings.append(Codes.DECK_CARD_STAR, new DeckCardTable());
+
 		mUriMatcher.addURI(AUTHORITY, Paths.CARDS_VIEW, Codes.CARDS);
 		mMappings.append(Codes.CARDS, new CardsView());
 		mUriMatcher.addURI(AUTHORITY, Paths.CARDS_VIEW + "/*", Codes.CARDS_STAR);
 		mMappings.append(Codes.CARDS_STAR, new CardsView());
+
 		mUriMatcher.addURI(AUTHORITY, Paths.DECKS_VIEW, Codes.DECK_LIST);
 		mMappings.append(Codes.DECK_LIST, new DeckListView());
 		mUriMatcher.addURI(AUTHORITY, Paths.DECKS_VIEW + "/*", Codes.DECK_LIST_STAR);
 		mMappings.append(Codes.DECK_LIST_STAR, new DeckListView());
+
         createDatabase();
 		return true;
 	}
@@ -151,133 +157,51 @@ public class MagicContentProvider extends ContentProvider {
 	@Override
 	public Uri insert(final Uri uri, final ContentValues values) {
 		final SQLiteDatabase insertDB = sDatabase;
-		final int token = mUriMatcher.match(uri);
-		final long id;
-		switch (token) {
-		case Codes.SET:
-			id = insertDB.insert(Paths.SET_TABLE, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return Uris.SET_URI.buildUpon().appendPath(String.valueOf(id)).build();
-		case Codes.CARD:
-			id = insertDB.insert(Paths.CARD_TABLE, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return Uris.CARD_URI.buildUpon().appendPath(String.valueOf(id)).build();
-		case Codes.SET_CARD:
-			id = insertDB.insert(Paths.SET_CARD_TABLE, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return Uris.SET_CARD_URI.buildUpon().appendPath(String.valueOf(id)).build();
-		case Codes.DECKS:
-			id = insertDB.insert(Paths.DECK_TABLE, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return Uris.DECKS_URI.buildUpon().appendPath(String.valueOf(id)).build();
-		case Codes.DECK_CARD:
-			id = insertDB.insert(Paths.DECK_CARD_TABLE, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return Uris.DECK_CARD_URI.buildUpon().appendPath(String.valueOf(id)).build();
-		default:
-			throw new UnsupportedOperationException("URI: " + uri + " not supported.");
-		}
+		final int match = mUriMatcher.match(uri);
+
+        final DatabaseSet databaseSet = mMappings.get(match);
+        final long id = databaseSet.insert(insertDB, uri, values);
+
+        final String idValue = String.valueOf(id);
+        final Uri uriToReturn = uri.buildUpon().appendPath(idValue).build();
+        return uriToReturn;
 	}
 
 	@Override
 	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
 		final SQLiteDatabase queryDB = sDatabase;
 		final int match = mUriMatcher.match(uri);
-		final SQLiteQueryBuilder builder;
 
         final DatabaseSet databaseSet = mMappings.get(match);
         final Cursor cursor = databaseSet.query(queryDB, uri, projection, selection, selectionArgs, sortOrder);
 
         return cursor;
-//		switch (match) {
-//		case Codes.SET:
-//			builder = new SQLiteQueryBuilder();
-//			builder.setTables(Paths.SET_TABLE);
-//			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
-//		case Codes.CARD:
-//			builder = new SQLiteQueryBuilder();
-//			builder.setTables(Paths.CARD_TABLE);
-//			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
-//		case Codes.SET_CARD:
-//			builder = new SQLiteQueryBuilder();
-//			builder.setTables(Paths.SET_CARD_TABLE);
-//			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
-//		case Codes.CARDS:
-//		case Codes.CARDS_STAR:
-//			builder = new SQLiteQueryBuilder();
-//			builder.setTables(Paths.CARDS_VIEW);
-//			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
-//		case Codes.DECKS:
-//		case Codes.DECKS_STAR:
-//			builder = new SQLiteQueryBuilder();
-//			builder.setTables(Paths.DECK_TABLE);
-//			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
-//		case Codes.DECK_CARD:
-//		case Codes.DECK_CARD_STAR:
-//			builder = new SQLiteQueryBuilder();
-//			builder.setTables(Paths.DECK_CARD_TABLE);
-//			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
-//		case Codes.DECK_LIST:
-//		case Codes.DECK_LIST_STAR:
-//			builder = new SQLiteQueryBuilder();
-//			builder.setTables(Paths.DECKS_VIEW);
-//			return builder.query(queryDB, projection, selection, selectionArgs, null, null, sortOrder);
-//		default:
-//			return null;
-//		}
 	}
 
 	@Override
 	public int delete(final Uri uri, final String selection, final String[] selectionArgs) {
 		final SQLiteDatabase deleteDB = sDatabase;
 		final int match = mUriMatcher.match(uri);
-		int count = 0;
-		switch (match) {
-		case Codes.DECK_CARD:
-			count = deleteDB.delete(Paths.DECK_CARD_TABLE, selection, selectionArgs);
-			getContext().getContentResolver().notifyChange(uri, null);
-			getContext().getContentResolver().notifyChange(Uris.DECK_LIST_URI, null);
-		}
-		return count;
+
+        final DatabaseSet databaseSet = mMappings.get(match);
+        final int removedRows = databaseSet.delete(deleteDB, uri, selection, selectionArgs);
+
+		return removedRows;
 	}
 
 	@Override
 	public int update(final Uri uri, final ContentValues values, final String whereClause, final String[] whereArgs) {
 		final SQLiteDatabase updateDB = sDatabase;
 		final int match = mUriMatcher.match(uri);
-		int count = 0;
-		switch (match) {
-		case Codes.SET:
-			count = updateDB.update(Paths.SET_TABLE, values, whereClause, whereArgs);
-			getContext().getContentResolver().notifyChange(uri, null);
-			break;
-		case Codes.CARD:
-			count = updateDB.update(Paths.CARD_TABLE, values, whereClause, whereArgs);
-			getContext().getContentResolver().notifyChange(uri, null);
-			break;
-		case Codes.SET_CARD:
-			count = updateDB.update(Paths.SET_CARD_TABLE, values, whereClause, whereArgs);
-			getContext().getContentResolver().notifyChange(uri, null);
-			break;
-		case Codes.DECKS:
-			count = updateDB.update(Paths.DECK_TABLE, values, whereClause, whereArgs);
-			getContext().getContentResolver().notifyChange(uri, null);
-			break;
-		case Codes.DECK_CARD:
-			count = updateDB.update(Paths.DECK_CARD_TABLE, values, whereClause, whereArgs);
-			getContext().getContentResolver().notifyChange(uri, null);
-			getContext().getContentResolver().notifyChange(Uris.DECK_LIST_URI, null);
-			break;
-		}
-		return count;
+
+        final DatabaseSet databaseSet = mMappings.get(match);
+        final int updatedRows = databaseSet.update(updateDB, uri, values, whereClause, whereArgs);
+
+        return updatedRows;
 	}
 
 	@Override
 	public String getType(Uri uri) {
 		return null;
-	}
-
-	public Uri getUri(String path) {
-		return Uri.parse(BASE_URI + "/" + path);
 	}
 }
