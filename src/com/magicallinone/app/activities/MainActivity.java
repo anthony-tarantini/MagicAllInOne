@@ -20,8 +20,8 @@ import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
 
 import com.magicallinone.app.R;
-import com.magicallinone.app.fragment.DeckListFragment;
-import com.magicallinone.app.fragment.SetsListFragment;
+import com.magicallinone.app.fragment.DeckListLoaderFragment;
+import com.magicallinone.app.fragment.SetsListLoaderFragment;
 import com.magicallinone.app.listeners.DrawerItemClickListener;
 import com.xtremelabs.imageutils.ImageLoader;
 
@@ -94,8 +94,8 @@ public class MainActivity extends BaseFragmentActivity implements DrawerItemClic
 
 		final FragmentManager fragmentManager = getFragmentManager();
 		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        final SetsListFragment setsListFragment = SetsListFragment.newInstance();
-        fragmentTransaction.add(R.id.content_frame, setsListFragment, SetsListFragment.class.getCanonicalName());
+        final SetsListLoaderFragment setsListFragment = SetsListLoaderFragment.newInstance();
+        fragmentTransaction.add(R.id.content_frame, setsListFragment, SetsListLoaderFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
 		mCurrentFragment = DrawerItems.SETS;
@@ -137,16 +137,16 @@ public class MainActivity extends BaseFragmentActivity implements DrawerItemClic
 		switch (position) {
 		case DrawerItems.SETS:
 			if (mCurrentFragment != DrawerItems.SETS) {
-                final SetsListFragment setsListFragment = SetsListFragment.newInstance();
-                goToFragment(setsListFragment, SetsListFragment.class.getCanonicalName());
+                final SetsListLoaderFragment setsListFragment = SetsListLoaderFragment.newInstance();
+                goToFragment(setsListFragment, SetsListLoaderFragment.class.getCanonicalName());
             }
 			break;
 		case DrawerItems.SEARCH:
 			break;
 		case DrawerItems.DECKBUILDER:
 			if (mCurrentFragment != DrawerItems.DECKBUILDER) {
-                final DeckListFragment deckListFragment = DeckListFragment.newInstance();
-                goToFragment(deckListFragment, DeckListFragment.class.getCanonicalName());
+                final DeckListLoaderFragment deckListFragment = DeckListLoaderFragment.newInstance();
+                goToFragment(deckListFragment, DeckListLoaderFragment.class.getCanonicalName());
             }
 			break;
 		case DrawerItems.LIFE_COUNTER:

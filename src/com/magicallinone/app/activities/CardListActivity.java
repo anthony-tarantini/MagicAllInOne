@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.magicallinone.app.R;
-import com.magicallinone.app.fragment.CardListFragment;
+import com.magicallinone.app.fragment.CardListLoaderFragment;
 import com.magicallinone.app.listeners.OnCardSelectedListener;
 import com.magicallinone.app.services.ApiService;
 
@@ -58,9 +58,9 @@ public class CardListActivity extends BaseFragmentActivity implements
 
 		final FragmentManager fragmentManager = getFragmentManager();
 		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		final CardListFragment cardListFragment = CardListFragment.newInstance(mSetId);
+		final CardListLoaderFragment cardListFragment = CardListLoaderFragment.newInstance(mSetId);
 		cardListFragment.setOnCardSelectedListener(this);
-		fragmentTransaction.add(R.id.content_frame, cardListFragment, CardListFragment.class.getCanonicalName());
+		fragmentTransaction.add(R.id.content_frame, cardListFragment, CardListLoaderFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
 		final ActionBar supportActionBar = getActionBar();

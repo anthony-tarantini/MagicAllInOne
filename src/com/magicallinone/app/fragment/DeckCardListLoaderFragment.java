@@ -2,7 +2,6 @@ package com.magicallinone.app.fragment;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
@@ -15,13 +14,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
 
 import com.magicallinone.app.R;
@@ -33,14 +30,13 @@ import com.magicallinone.app.listeners.CardMenuListener;
 import com.magicallinone.app.models.CardTag;
 import com.magicallinone.app.providers.MagicContentProvider;
 import com.magicallinone.app.services.ApiService;
-import com.magicallinone.app.views.DeckListContextMenu;
 import com.magicallinone.app.utils.ImageUtils;
+import com.magicallinone.app.views.DeckListContextMenu;
 
 import java.util.List;
 import java.util.regex.MatchResult;
 
-public class DeckCardListFragment extends BaseFragment implements ViewBinder,
-		LoaderCallbacks<Cursor>, OnItemClickListener, CardMenuListener {
+public class DeckCardListLoaderFragment extends BaseLoaderFragment implements CardMenuListener {
 
 	private int mDeckId;
 	private Button mAddCardButton;
@@ -76,8 +72,8 @@ public class DeckCardListFragment extends BaseFragment implements ViewBinder,
 		}
 	};
 
-	public static DeckCardListFragment newInstance(int deckId) {
-		final DeckCardListFragment fragment = new DeckCardListFragment();
+	public static DeckCardListLoaderFragment newInstance(int deckId) {
+		final DeckCardListLoaderFragment fragment = new DeckCardListLoaderFragment();
 
 		Bundle args = fragment.getArguments();
 		if (args == null)

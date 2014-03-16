@@ -2,7 +2,6 @@ package com.magicallinone.app.fragment;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,12 +20,10 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
@@ -43,8 +40,7 @@ import com.xtremelabs.imageutils.ImageReturnedFrom;
 import java.util.List;
 import java.util.regex.MatchResult;
 
-public class CardListFragment extends BaseFragment implements ViewBinder,
-		OnItemClickListener, LoaderCallbacks<Cursor> {
+public class CardListLoaderFragment extends BaseLoaderFragment {
 
 	public static final String[] COLUMNS = { CardsView.Columns.NAME, CardsView.Columns.MANA_COST, CardsView.Columns.RULES_TEXT, CardsView.Columns.FLAVOUR_TEXT, CardsView.Columns.NUMBER, CardsView.Columns.WATERMARK, };
 
@@ -72,8 +68,8 @@ public class CardListFragment extends BaseFragment implements ViewBinder,
 	private ProgressDialog mProgressDialog;
 	private OnCardSelectedListener mOnCardSelectedListener;
 
-	public static CardListFragment newInstance(final String setId) {
-		final CardListFragment cardListFragment = new CardListFragment();
+	public static CardListLoaderFragment newInstance(final String setId) {
+		final CardListLoaderFragment cardListFragment = new CardListLoaderFragment();
 		Bundle args = cardListFragment.getArguments();
 		if (args == null) {
 			args = new Bundle();

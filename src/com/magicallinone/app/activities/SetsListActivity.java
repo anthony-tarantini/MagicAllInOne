@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.magicallinone.app.R;
-import com.magicallinone.app.fragment.SetsListFragment;
+import com.magicallinone.app.fragment.SetsListLoaderFragment;
 
 public class SetsListActivity extends BaseFragmentActivity {
 
@@ -36,8 +36,8 @@ public class SetsListActivity extends BaseFragmentActivity {
 
 		final FragmentManager fragmentManager = getFragmentManager();
 		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        final SetsListFragment setsListFragment = SetsListFragment.newInstance(mDeckId);
-        fragmentTransaction.add(R.id.content_frame, setsListFragment, SetsListFragment.class.getCanonicalName());
+        final SetsListLoaderFragment setsListFragment = SetsListLoaderFragment.newInstance(mDeckId);
+        fragmentTransaction.add(R.id.content_frame, setsListFragment, SetsListLoaderFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
 		final ActionBar supportActionBar = getActionBar();

@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.magicallinone.app.R;
-import com.magicallinone.app.fragment.SplashFragment;
+import com.magicallinone.app.fragment.SplashLoaderFragment;
 import com.magicallinone.app.services.ApiService;
 
 public class SplashActivity extends BaseFragmentActivity {
@@ -25,8 +25,8 @@ public class SplashActivity extends BaseFragmentActivity {
 
 		final FragmentManager fragmentManager = getFragmentManager();
 		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        final SplashFragment splashFragment = SplashFragment.newInstance();
-        fragmentTransaction.add(R.id.content_frame, splashFragment, SplashFragment.class.getCanonicalName());
+        final SplashLoaderFragment splashFragment = SplashLoaderFragment.newInstance();
+        fragmentTransaction.add(R.id.content_frame, splashFragment, SplashLoaderFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
 		createReceiver();

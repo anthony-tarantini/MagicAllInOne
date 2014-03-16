@@ -8,8 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.magicallinone.app.R;
-import com.magicallinone.app.fragment.DeckCardListFragment;
-import com.magicallinone.app.fragment.DeckInformationFragment;
+import com.magicallinone.app.fragment.DeckCardListLoaderFragment;
+import com.magicallinone.app.fragment.DeckInformationLoaderFragment;
 import com.magicallinone.app.models.Deck;
 
 public class DeckbuilderActivity extends BaseFragmentActivity {
@@ -35,11 +35,11 @@ public class DeckbuilderActivity extends BaseFragmentActivity {
 
 		final FragmentManager fragmentManager = getFragmentManager();
 		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        final DeckInformationFragment deckInformationFragment = DeckInformationFragment.newInstance(mDeck);
-        final DeckCardListFragment deckCardListFragment = DeckCardListFragment.newInstance(mDeck.deck_id);
+        final DeckInformationLoaderFragment deckInformationFragment = DeckInformationLoaderFragment.newInstance(mDeck);
+        final DeckCardListLoaderFragment deckCardListFragment = DeckCardListLoaderFragment.newInstance(mDeck.deck_id);
 
-		fragmentTransaction.add(R.id.activity_deckbuilder_information, deckInformationFragment, DeckInformationFragment.class.getCanonicalName());
-        fragmentTransaction.add(R.id.activity_deckbuilder_list, deckCardListFragment, DeckCardListFragment.class.getCanonicalName());
+		fragmentTransaction.add(R.id.activity_deckbuilder_information, deckInformationFragment, DeckInformationLoaderFragment.class.getCanonicalName());
+        fragmentTransaction.add(R.id.activity_deckbuilder_list, deckCardListFragment, DeckCardListLoaderFragment.class.getCanonicalName());
 		fragmentTransaction.commit();
 
 		final ActionBar supportActionBar = getActionBar();

@@ -1,16 +1,16 @@
 package com.magicallinone.app.dialogfragments;
 
-import com.xtremelabs.imageutils.ImageLoader;
-
 import android.app.DialogFragment;
 import android.os.Bundle;
+
+import com.xtremelabs.imageutils.ImageLoader;
 
 public class BaseDialogFragment extends DialogFragment {
 
 	private ImageLoader mLoader;
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mLoader = ImageLoader.buildImageLoaderForFragment(this);
 	}

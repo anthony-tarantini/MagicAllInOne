@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.magicallinone.app.R;
 import com.magicallinone.app.utils.ImageUtils;
+import com.xtremelabs.imageutils.ImageLoader;
 
 public class CardDetailDialogFragment extends BaseDialogFragment {
 
@@ -18,7 +19,7 @@ public class CardDetailDialogFragment extends BaseDialogFragment {
 	}
 	
 	public static CardDetailDialogFragment newInstance(String setId, int cardNumber){
-		CardDetailDialogFragment fragment = new CardDetailDialogFragment();
+		final CardDetailDialogFragment fragment = new CardDetailDialogFragment();
 		
 		Bundle args = fragment.getArguments();
 		if (args == null){
@@ -36,19 +37,20 @@ public class CardDetailDialogFragment extends BaseDialogFragment {
 	private int mCardNumber;
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mSetId = getArguments().getString(Arguments.SET_ID);
 		mCardNumber = getArguments().getInt(Arguments.CARD_NUMBER);
 	}
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.dialog_fragment_card_details, container, false);
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		final View view = inflater.inflate(R.layout.dialog_fragment_card_details, container, false);
 		
 		final ImageView imageView = (ImageView) view.findViewById(R.id.dialog_fragment_card_details_image);
-		getImageLoader().loadImage(imageView, ImageUtils.getImageUrl(mSetId, mCardNumber));
+        final ImageLoader imageLoader = getImageLoader();
+        final String imageUrl = ImageUtils.getImageUrl(mSetId, mCardNumber);
+        imageLoader.loadImage(imageView, imageUrl);
 		
 		return view;
 	}
