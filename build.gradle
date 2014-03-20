@@ -8,8 +8,16 @@ buildscript {
 }
 apply plugin: 'android'
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.squareup.retrofit:retrofit:1.1.1'
+    compile 'com.android.support:support-v4:18.0.+'
+    compile 'mobi.parchment:parchment:1.5.2@aar'
 }
 
 android {

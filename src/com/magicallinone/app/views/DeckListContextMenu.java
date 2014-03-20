@@ -9,6 +9,8 @@ import com.magicallinone.app.listeners.CardMenuListener;
 import com.magicallinone.app.models.CardTag;
 
 public class DeckListContextMenu {
+    public final static int MAX_CARDS = 4;
+    public final static int MIN_CARDS = 1;
 
 	private CardMenuListener mListener;
 	private View mMenu;
@@ -72,14 +74,14 @@ public class DeckListContextMenu {
 	}
 
 	private void toggleMinusVisibility(final int quantity) {
-        final boolean lowestQuantity = quantity < 2;
+        final boolean lowestQuantity = quantity <= MIN_CARDS;
 		final int visibility = lowestQuantity ? View.INVISIBLE : View.VISIBLE;
         final View overlayMinus = mMenu.findViewById(R.id.list_item_overlay_menu_minus);
         overlayMinus.setVisibility(visibility);
 	}
 
 	private void togglePlusVisibility(final int quantity) {
-        final boolean highestQuantity = quantity > 3;
+        final boolean highestQuantity = quantity >= MAX_CARDS;
 		final int visibility = highestQuantity ? View.INVISIBLE : View.VISIBLE;
         final View overlayPlus = mMenu.findViewById(R.id.list_item_overlay_menu_plus);
         overlayPlus.setVisibility(visibility);

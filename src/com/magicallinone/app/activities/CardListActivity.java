@@ -19,8 +19,7 @@ import com.magicallinone.app.fragment.CardListLoaderFragment;
 import com.magicallinone.app.listeners.OnCardSelectedListener;
 import com.magicallinone.app.services.ApiService;
 
-public class CardListActivity extends BaseFragmentActivity implements
-		OnCardSelectedListener {
+public class CardListActivity extends BaseFragmentActivity implements OnCardSelectedListener {
 
 	public static final class Extras {
 		public static final String SET = "set";
