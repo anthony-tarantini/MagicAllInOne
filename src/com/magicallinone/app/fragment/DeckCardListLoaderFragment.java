@@ -28,7 +28,7 @@ import com.magicallinone.app.datasets.DeckCardTable;
 import com.magicallinone.app.datasets.DeckListView;
 import com.magicallinone.app.listeners.CardMenuListener;
 import com.magicallinone.app.models.CardTag;
-import com.magicallinone.app.providers.MagicContentProvider;
+import com.magicallinone.app.providers.MAIOContentProvider;
 import com.magicallinone.app.services.ApiService;
 import com.magicallinone.app.utils.ImageUtils;
 import com.magicallinone.app.views.DeckListContextMenu;
@@ -136,7 +136,7 @@ public class DeckCardListLoaderFragment extends BaseLoaderFragment implements Ca
 		final String[] selectionArgs = { String.valueOf(mDeckId), };
 		final String orderBy = CardsView.Columns.NUMBER + " ASC";
         final Activity activity = getActivity();
-        mCursorLoader = new CursorLoader(activity, MagicContentProvider.Uris.DECK_LIST_URI, null, selection, selectionArgs, orderBy);
+        mCursorLoader = new CursorLoader(activity, MAIOContentProvider.Uris.DECK_LIST_URI, null, selection, selectionArgs, orderBy);
 		return mCursorLoader;
 	}
 
@@ -146,7 +146,7 @@ public class DeckCardListLoaderFragment extends BaseLoaderFragment implements Ca
 		if (mAdapter != null && cursor != null) {
             final Activity activity = getActivity();
             final ContentResolver contentResolver = activity.getContentResolver();
-            cursor.setNotificationUri(contentResolver, MagicContentProvider.Uris.DECK_CARD_URI);
+            cursor.setNotificationUri(contentResolver, MAIOContentProvider.Uris.DECK_CARD_URI);
             mAdapter.swapCursor(cursor);
 		}
 		if (cursor != null && cursor.moveToFirst()) {

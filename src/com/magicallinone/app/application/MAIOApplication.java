@@ -12,9 +12,10 @@ import com.magicallinone.app.R;
 import com.xtremelabs.imageutils.ImageLoader;
 import com.xtremelabs.imageutils.ImageLoader.Options;
 
-public class MagicApplication extends Application {
+public class MAIOApplication extends Application {
 	public static final int DATABASE_VERSION = 1;
 	public static final String DATABASE_NAME = "magicallinone.db";
+    public static final String DEBUG_TAG = "MagicAllInOne";
 
 	private static final int MAX_IMAGES_MEM_CACHE_SIZE = 8 * 1024 * 1024;
 

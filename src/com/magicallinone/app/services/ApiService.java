@@ -17,7 +17,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
-import com.magicallinone.app.application.MagicApplication;
+import com.magicallinone.app.application.MAIOApplication;
 import com.magicallinone.app.datasets.CardTable;
 import com.magicallinone.app.datasets.DeckCardTable;
 import com.magicallinone.app.datasets.DeckTable;
@@ -28,7 +28,7 @@ import com.magicallinone.app.models.Card;
 import com.magicallinone.app.models.Deck;
 import com.magicallinone.app.models.Set;
 import com.magicallinone.app.models.Sets;
-import com.magicallinone.app.providers.MagicContentProvider;
+import com.magicallinone.app.providers.MAIOContentProvider;
 
 public class ApiService extends IntentService {
 	private static final String SERVICE = "ApiService";
@@ -78,7 +78,7 @@ public class ApiService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		mQuery = intent.getStringExtra(Extras.QUERY);
 		mOperation = intent.getIntExtra(Extras.OPERATION, -1);
-		mAssetManager = MagicApplication.getContext().getAssets();
+		mAssetManager = MAIOApplication.getContext().getAssets();
 		final ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
 		switch (mOperation) {
 		case Operations.SINGLE_SET:
@@ -111,12 +111,12 @@ public class ApiService extends IntentService {
 			InputStream inputStream = mAssetManager.open(SETS + mQuery + JSON);
 			Type setType = new TypeToken<Set>() {
 			}.getType();
-			Set set = MagicApplication.getParser().fromJson(
+			Set set = MAIOApplication.getParser().fromJson(
 					new InputStreamReader(inputStream), setType);
 			ContentProviderOperation operation;
 			final ContentValues setValues = SetTable.getContentValues(set);
 			operation = ContentProviderOperation
-					.newInsert(MagicContentProvider.Uris.SET_URI)
+					.newInsert(MAIOContentProvider.Uris.SET_URI)
 					.withValues(setValues).build();
 			operations.add(operation);
 			for (Card card : set.cards) {
@@ -124,7 +124,7 @@ public class ApiService extends IntentService {
 				if (!cardValues.get(Columns.EXTRA_TYPES).equals(
 						Types.BASIC_LAND)) {
 					operation = ContentProviderOperation
-							.newInsert(MagicContentProvider.Uris.CARD_URI)
+							.newInsert(MAIOContentProvider.Uris.CARD_URI)
 							.withValues(cardValues).build();
 					operations.add(operation);
 
@@ -132,7 +132,7 @@ public class ApiService extends IntentService {
 					setCard.put(SetCardTable.Columns.SET_CODE, set.code);
 					setCard.put(SetCardTable.Columns.CARD_ID, card.multiverseid);
 					operation = ContentProviderOperation
-							.newInsert(MagicContentProvider.Uris.SET_CARD_URI)
+							.newInsert(MAIOContentProvider.Uris.SET_CARD_URI)
 							.withValues(setCard).build();
 					operations.add(operation);
 				}
@@ -149,13 +149,13 @@ public class ApiService extends IntentService {
 			InputStream inputStream = mAssetManager.open(SETS + mQuery + JSON);
 			Type setType = new TypeToken<Sets>() {
 			}.getType();
-			Sets sets = MagicApplication.getParser().fromJson(
+			Sets sets = MAIOApplication.getParser().fromJson(
 					new InputStreamReader(inputStream), setType);
 			ContentProviderOperation operation;
 			for (Set set : sets.sets) {
 				final ContentValues setValues = SetTable.getContentValues(set);
 				operation = ContentProviderOperation
-						.newInsert(MagicContentProvider.Uris.SET_URI)
+						.newInsert(MAIOContentProvider.Uris.SET_URI)
 						.withValues(setValues).build();
 				operations.add(operation);
 			}
@@ -173,7 +173,7 @@ public class ApiService extends IntentService {
 				intent.getStringExtra(Extras.FORMAT));
 		final ContentValues deckValues = DeckTable.getContentValues(deck);
 		operation = ContentProviderOperation
-				.newInsert(MagicContentProvider.Uris.DECKS_URI)
+				.newInsert(MAIOContentProvider.Uris.DECKS_URI)
 				.withValues(deckValues).build();
 		operations.add(operation);
 	}
@@ -189,7 +189,7 @@ public class ApiService extends IntentService {
 		deckCardValues.put(DeckCardTable.Columns.QUANTITY,
 				intent.getIntExtra(Extras.QUANTITY, -1));
 		operation = ContentProviderOperation
-				.newInsert(MagicContentProvider.Uris.DECK_CARD_URI)
+				.newInsert(MAIOContentProvider.Uris.DECK_CARD_URI)
 				.withValues(deckCardValues).build();
 		operations.add(operation);
 	}
@@ -204,7 +204,7 @@ public class ApiService extends IntentService {
 		String[] selectionArgs = new String[] { intent
 				.getStringExtra(Extras.QUERY), };
 		operation = ContentProviderOperation
-				.newUpdate(MagicContentProvider.Uris.DECK_CARD_URI)
+				.newUpdate(MAIOContentProvider.Uris.DECK_CARD_URI)
 				.withValues(countUpdateValues)
 				.withSelection(selection, selectionArgs).build();
 		operations.add(operation);
@@ -217,7 +217,7 @@ public class ApiService extends IntentService {
 		String[] selectionArgs = new String[] { intent
 				.getStringExtra(Extras.QUERY), };
 		operation = ContentProviderOperation
-				.newDelete(MagicContentProvider.Uris.DECK_CARD_URI)
+				.newDelete(MAIOContentProvider.Uris.DECK_CARD_URI)
 				.withSelection(selection, selectionArgs).build();
 		operations.add(operation);
 	}
@@ -226,7 +226,7 @@ public class ApiService extends IntentService {
 			final ArrayList<ContentProviderOperation> operations) {
 		final ContentResolver resolver = getContentResolver();
 		try {
-			resolver.applyBatch(MagicContentProvider.AUTHORITY, operations);
+			resolver.applyBatch(MAIOContentProvider.AUTHORITY, operations);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (OperationApplicationException e) {

@@ -40,7 +40,7 @@ public abstract class DatabaseTable extends DatabaseSet {
         final String columnsString = DBUtils.mapToString(columns);
         final String constraintString = getConstraintString();
         final String query = CREATE_TABLE + tableName + " (" + columnsString +  constraintString + ");";
-        Log.d("MagicDatabase", query);
+        Log.d("MAIODatabase", query);
 		database.execSQL(query);
 	}
 

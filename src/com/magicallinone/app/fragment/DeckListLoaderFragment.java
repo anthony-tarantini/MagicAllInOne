@@ -29,7 +29,7 @@ import com.magicallinone.app.R;
 import com.magicallinone.app.activities.DeckbuilderActivity;
 import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.models.Deck;
-import com.magicallinone.app.providers.MagicContentProvider;
+import com.magicallinone.app.providers.MAIOContentProvider;
 import com.magicallinone.app.services.ApiService;
 
 public class DeckListLoaderFragment extends BaseLoaderFragment {
@@ -149,7 +149,7 @@ public class DeckListLoaderFragment extends BaseLoaderFragment {
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
         final Activity activity = getActivity();
-        mCursorLoader = new CursorLoader(activity, MagicContentProvider.Uris.DECKS_URI, null, null, null, null);
+        mCursorLoader = new CursorLoader(activity, MAIOContentProvider.Uris.DECKS_URI, null, null, null, null);
 		return mCursorLoader;
 	}
 
@@ -159,7 +159,7 @@ public class DeckListLoaderFragment extends BaseLoaderFragment {
 		if (mAdapter != null && cursor != null) {
             final Activity activity = getActivity();
             final ContentResolver contentResolver = activity.getContentResolver();
-            cursor.setNotificationUri(contentResolver, MagicContentProvider.Uris.DECKS_URI);
+            cursor.setNotificationUri(contentResolver, MAIOContentProvider.Uris.DECKS_URI);
 			mAdapter.swapCursor(cursor);
 		}
 		if (cursor != null && cursor.moveToFirst()) {

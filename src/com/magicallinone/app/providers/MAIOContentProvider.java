@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.SparseArray;
 
-import com.magicallinone.app.application.MagicDatabase;
+import com.magicallinone.app.application.MAIODatabase;
 import com.magicallinone.app.datasets.CardTable;
 import com.magicallinone.app.datasets.CardsView;
 import com.magicallinone.app.datasets.DeckCardTable;
@@ -16,12 +16,13 @@ import com.magicallinone.app.datasets.DeckListView;
 import com.magicallinone.app.datasets.DeckTable;
 import com.magicallinone.app.datasets.SetCardTable;
 import com.magicallinone.app.datasets.SetTable;
+import com.magicallinone.app.datasets.TasksTable;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class MagicContentProvider extends ContentProvider {
+public class MAIOContentProvider extends ContentProvider {
 	
 	private static SQLiteDatabase sDatabase;
 
@@ -42,7 +43,7 @@ public class MagicContentProvider extends ContentProvider {
 	
 	private void createDatabase() {
 		if (sDatabase == null) {
-			final MagicDatabase database = new MagicDatabase(getContext(), getSets()); 
+			final MAIODatabase database = new MAIODatabase(getContext(), getSets());
 			sDatabase = database.getWritableDatabase();
 		}
 	}
@@ -64,6 +65,7 @@ public class MagicContentProvider extends ContentProvider {
 	}
 	
 	public static final class Uris {
+        public static final Uri TASKS_URI = Uri.parse(BASE_URI + "/" + Paths.TASKS);
 		public static final Uri SET_URI = Uri.parse(BASE_URI + "/" + Paths.SET_TABLE);
 		public static final Uri CARD_URI = Uri.parse(BASE_URI + "/" + Paths.CARD_TABLE);
 		public static final Uri SET_CARD_URI = Uri.parse(BASE_URI + "/" + Paths.SET_CARD_TABLE);
@@ -74,6 +76,7 @@ public class MagicContentProvider extends ContentProvider {
 	}
 
 	private static final class Tables {
+        private static final String TASKS = TasksTable.TABLE_NAME;
 		private static final String SET = SetTable.TABLE_NAME;
 		private static final String CARD = CardTable.TABLE_NAME;
 		private static final String SET_CARD = SetCardTable.TABLE_NAME;
@@ -87,6 +90,7 @@ public class MagicContentProvider extends ContentProvider {
 	}
 	
 	private static final class Paths {
+        public static final String TASKS = Tables.TASKS;
 		public static final String SET_TABLE = Tables.SET;
 		public static final String CARD_TABLE = Tables.CARD;
 		public static final String SET_CARD_TABLE = Tables.SET_CARD;
@@ -97,24 +101,28 @@ public class MagicContentProvider extends ContentProvider {
 	}
 
 	private static final class Codes {
-		public static final int SET = 1;
-		public static final int SET_STAR = 2;
-		public static final int CARD = 3;
-		public static final int CARD_STAR = 4;
-		public static final int SET_CARD = 5;
-		public static final int SET_CARD_STAR = 6;
-		public static final int CARDS = 7;
-		public static final int CARDS_STAR = 8;
-		public static final int DECKS = 9;
-		public static final int DECKS_STAR = 10;
-		public static final int DECK_CARD = 11;
-		public static final int DECK_CARD_STAR = 12;
-		public static final int DECK_LIST = 13;
-		public static final int DECK_LIST_STAR = 14;
+        public static final int TASKS = 1;
+		public static final int SET = 2;
+		public static final int SET_STAR = 3;
+		public static final int CARD = 4;
+		public static final int CARD_STAR = 5;
+		public static final int SET_CARD = 6;
+		public static final int SET_CARD_STAR = 7;
+		public static final int CARDS = 8;
+		public static final int CARDS_STAR = 9;
+		public static final int DECKS = 10;
+		public static final int DECKS_STAR = 11;
+		public static final int DECK_CARD = 12;
+		public static final int DECK_CARD_STAR = 13;
+		public static final int DECK_LIST = 14;
+		public static final int DECK_LIST_STAR = 15;
 	}
 
 	@Override
 	public boolean onCreate() {
+        mUriMatcher.addURI(AUTHORITY, Paths.TASKS, Codes.SET);
+        mMappings.append(Codes.TASKS, new TasksTable());
+
 		mUriMatcher.addURI(AUTHORITY, Paths.SET_TABLE, Codes.SET);
 		mMappings.append(Codes.SET, new SetTable());
 		mUriMatcher.addURI(AUTHORITY, Paths.SET_TABLE + "/*", Codes.SET_STAR);

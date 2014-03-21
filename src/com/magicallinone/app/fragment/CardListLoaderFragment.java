@@ -28,10 +28,10 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
 import com.magicallinone.app.R;
-import com.magicallinone.app.application.MagicApplication;
+import com.magicallinone.app.application.MAIOApplication;
 import com.magicallinone.app.datasets.CardsView;
 import com.magicallinone.app.listeners.OnCardSelectedListener;
-import com.magicallinone.app.providers.MagicContentProvider;
+import com.magicallinone.app.providers.MAIOContentProvider;
 import com.magicallinone.app.services.ApiService;
 import com.magicallinone.app.utils.ImageUtils;
 import com.xtremelabs.imageutils.ImageLoaderListener;
@@ -93,7 +93,7 @@ public class CardListLoaderFragment extends BaseLoaderFragment {
 		mSetId = getArguments().getString(Extras.SET);
 
 		mLoaderManager = getLoaderManager();
-		getImageLoader().setDefaultOptions(MagicApplication.getImageLoaderOptions());
+		getImageLoader().setDefaultOptions(MAIOApplication.getImageLoaderOptions());
 
 		createReceiver();
 		startApiService();
@@ -231,7 +231,7 @@ public class CardListLoaderFragment extends BaseLoaderFragment {
 		final String[] selectionArgs = { mSetId, };
 		final String orderBy = CardsView.Columns.NUMBER + " ASC";
         final Activity activity = getActivity();
-		mCursorLoader = new CursorLoader(activity, MagicContentProvider.Uris.CARDS_URI, null, selection, selectionArgs, orderBy);
+		mCursorLoader = new CursorLoader(activity, MAIOContentProvider.Uris.CARDS_URI, null, selection, selectionArgs, orderBy);
 		return mCursorLoader;
 	}
 

@@ -14,7 +14,7 @@ public abstract class DatabaseView extends DatabaseSet {
 	@Override
 	public void onCreate(final SQLiteDatabase db) {		
 		final String query = String.format(CREATE_VIEW, getName(), getSelectString());
-        Log.d("MagicDatabase", query);
+        Log.d("MAIODatabase", query);
 		db.execSQL(query);
 	}
 	

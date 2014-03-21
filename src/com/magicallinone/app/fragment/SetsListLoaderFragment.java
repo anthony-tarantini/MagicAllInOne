@@ -19,7 +19,7 @@ import com.magicallinone.app.activities.BaseFragmentActivity.RequestCodes;
 import com.magicallinone.app.activities.CardListActivity;
 import com.magicallinone.app.activities.SetsListActivity;
 import com.magicallinone.app.datasets.SetTable;
-import com.magicallinone.app.providers.MagicContentProvider;
+import com.magicallinone.app.providers.MAIOContentProvider;
 import com.magicallinone.app.utils.ImageUtils;
 
 public class SetsListLoaderFragment extends BaseLoaderFragment {
@@ -78,7 +78,7 @@ public class SetsListLoaderFragment extends BaseLoaderFragment {
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle bundle) {
         final Activity activity = getActivity();
-        mCursorLoader = new CursorLoader(activity, MagicContentProvider.Uris.SET_URI, null, null, null, SetTable.Columns.RELEASE_DATE + " DESC");
+        mCursorLoader = new CursorLoader(activity, MAIOContentProvider.Uris.SET_URI, null, null, null, SetTable.Columns.RELEASE_DATE + " DESC");
 		return mCursorLoader;
 	}
 

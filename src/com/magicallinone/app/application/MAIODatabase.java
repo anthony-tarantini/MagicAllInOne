@@ -11,19 +11,19 @@ import com.magicallinone.app.providers.DatabaseView;
 
 import java.util.Collection;
 
-public class MagicDatabase extends SQLiteOpenHelper {
+public class MAIODatabase extends SQLiteOpenHelper {
 
     private final Collection<DatabaseSet> mSets;
 	
-	public MagicDatabase(final Context context, final Collection<DatabaseSet> sets) {
-		super(context, MagicApplication.DATABASE_NAME, null, MagicApplication.DATABASE_VERSION);
-		Log.d("MagicDatabase", "MagicDatabase");
+	public MAIODatabase(final Context context, final Collection<DatabaseSet> sets) {
+		super(context, MAIOApplication.DATABASE_NAME, null, MAIOApplication.DATABASE_VERSION);
+		Log.d("MAIODatabase", "MAIODatabase");
         mSets = sets;
 	}
 
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		Log.d("MagicDatabase", "onCreate");
+		Log.d("MAIODatabase", "onCreate");
 		createTables(db);
         createViews(db);
 	}
